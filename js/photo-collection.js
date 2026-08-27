@@ -50,6 +50,22 @@
         '<a href="photo-collection.html?id=' + encodeURIComponent(prev.id) + '">&larr; ' + prev.title + '</a>' +
         '<a href="photo-collection.html?id=' + encodeURIComponent(next.id) + '">' + next.title + ' &rarr;</a>' +
         '</div>';
+
+      // Can't know a photo's real orientation until the browser's actually
+      // read it — same "check on load, don't guess from the filename"
+      // approach as the Index page's portrait-video handling. A landscape
+      // photo gets .is-landscape (see css/photography.css), which spans 2
+      // grid columns instead of being squeezed into the same narrow
+      // portrait-shaped cell as everything else.
+      Array.from(root.querySelectorAll('.collection-grid__item img')).forEach(function (img) {
+        function markIfLandscape() {
+          if (img.naturalWidth > img.naturalHeight) {
+            img.closest('.collection-grid__item').classList.add('is-landscape');
+          }
+        }
+        if (img.complete && img.naturalWidth) { markIfLandscape(); return; }
+        img.addEventListener('load', markIfLandscape, { once: true });
+      });
     })
     .catch(function (err) {
       console.error('Could not load data/photos.json', err);

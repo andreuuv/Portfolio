@@ -144,7 +144,7 @@
    .site-nav__links letter-spacing stays as-is everywhere else). */
 .collection-page-body .site-nav__links a,
 .collection-page-body .site-nav__links button {
-  letter-spacing: 0.08em;
+  letter-spacing: 0.03em;
 }
 
 .project-header {
@@ -156,23 +156,42 @@
 .collection-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
+  grid-auto-flow: row dense; /* fills gaps left by 2-wide landscape cells
+    instead of leaving holes where a following portrait won't fit */
   gap: 2px;
   margin: clamp(2rem, 5vw, 3rem) var(--edge) 0;
 }
 .collection-grid__item {
-  aspect-ratio: 3 / 4;
+  aspect-ratio: 3 / 4; /* default guess until we know the real photo — see
+    js/photo-collection.js's markOrientation() */
   overflow: hidden;
   background: #ececec;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+/* A landscape photo spans 2 of the 3 columns — same total width as two
+   portrait photos side by side — instead of being squeezed into the same
+   narrow portrait-shaped cell as everything else. Per explicit "dos
+   verticales ocupen lo mismo que una en horizontal" request. */
+.collection-grid__item.is-landscape {
+  aspect-ratio: 3 / 2;
+  grid-column: span 2;
 }
 .collection-grid__item img {
   width: 100%;
   height: 100%;
-  object-fit: cover;
+  /* "contain" instead of "cover" — every photo shows in full, never
+     cropped, per explicit "que todas las imagenes se vean completas"
+     request. The cell's background fills any letterboxed gap. */
+  object-fit: contain;
 }
 
 @media (max-width: 900px) {
   .collection-grid { grid-template-columns: repeat(2, 1fr); }
+  .collection-grid__item.is-landscape { grid-column: span 2; }
 }
 @media (max-width: 520px) {
   .collection-grid { grid-template-columns: 1fr; }
+  .collection-grid__item.is-landscape { grid-column: span 1; }
 }
