@@ -1,0 +1,183 @@
+/* Photography — two horizontally-scrolling filmstrips (Analog / Digital)
+   with the site nav floating fixed in the gap between them. */
+
+.photo-page-body {
+  overflow-x: hidden;
+}
+
+.photo-page {
+  /* Minimal top/bottom bleed — content sits right at the viewport edge. */
+  --page-bleed: 8px;
+  /* Empty band left dead-center for the fixed nav to float in, between
+     the Analog and Digital strips. */
+  --menu-gap: clamp(2.5rem, 8vh, 5rem);
+  /* Non-image height per row: section label + its margin, plus the
+     caption + its margin, plus the strip's own bottom padding. Kept in
+     one place so the image-height formula below can subtract it back out
+     and the two rows split the rest of the viewport evenly. */
+  --strip-chrome: 63.4px; /* measured: label (14.5) + its margin (16) + caption
+                              (14.5) + its margin (10.4) + strip pad-bottom (8) */
+
+  min-height: 100svh;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: var(--menu-gap);
+  padding: var(--page-bleed) 0;
+}
+
+.photo-strip-section__label {
+  display: block;
+  padding: 0 var(--edge);
+  margin-bottom: 1rem;
+  font-size: 0.68rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--fg-soft);
+}
+
+/* Auto-scrolling filmstrip: a real horizontal scroll container now (was a
+   CSS @keyframes transform loop) — js/photography.js drives it by nudging
+   scrollLeft every frame and wrapping at the halfway point of the
+   duplicated track for a seamless loop. Top row drifts one way, bottom row
+   the other. Being a real scroll container means it's also manually
+   scrollable: drag with the mouse, spin a wheel/trackpad, or swipe on
+   touch — explicit request, so you can go look for something specific
+   instead of waiting for the marquee to bring it around. Auto-scroll
+   pauses on interaction and resumes shortly after (see js/photography.js);
+   prefers-reduced-motion turns off the auto-scroll entirely, leaving a
+   plain manual scroller. */
+.photo-strip {
+  overflow-x: auto;
+  overflow-y: hidden;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none; /* Firefox */
+  cursor: grab;
+  padding: 0 var(--edge) 0.5rem;
+  /* Shared with the card-width formula below so exactly this many gaps
+     get subtracted from the viewport width — keep the two in sync. */
+  --strip-gap: clamp(0.5rem, 1.5vw, 1.25rem);
+  /* How many full cards should fit on screen at once — drives the width
+     formula on .photo-strip__cover. Lower on small screens (see the
+     720px media query) so cards don't get squeezed too narrow. */
+  --strip-visible: 3;
+  /* Single source of truth for card width — used both to size the card
+     (below) and to work out exactly how far the neighbors need to slide
+     over so the hover-grow doesn't overlap them (further down). Was +80px
+     per the earlier explicit "make them bigger, don't worry about the
+     fit" request — trimmed down twice since (+70px, then +60px) per
+     follow-up "smaller" requests. */
+  --card-w: calc(((100vw - (2 * var(--edge)) - ((var(--strip-visible) - 1) * var(--strip-gap))) / var(--strip-visible)) + 60px);
+  /* How much bigger a hovered card gets (1.08 = +8%). */
+  --card-grow: 1.08;
+}
+.photo-strip::-webkit-scrollbar { display: none; } /* Chrome/Safari — scroll still works, just no visible bar */
+.photo-strip.is-dragging { cursor: grabbing; }
+.photo-strip__track {
+  display: flex;
+  width: max-content;
+  gap: var(--strip-gap);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .photo-strip__item[aria-hidden="true"] { display: none; }
+}
+
+.photo-strip__item {
+  flex: 0 0 auto;
+  display: block;
+  position: relative; /* so the hovered card can lift above its neighbors */
+  transition: transform 0.4s var(--ease);
+  -webkit-user-drag: none; /* don't fight our own drag-to-scroll with the browser's native link-drag ghost */
+  user-select: none;
+}
+.photo-strip__item:hover {
+  z-index: 2; /* grown card would otherwise paint under the next one in the row */
+}
+/* Growing a card by --card-grow overflows (--card-grow - 1) / 2 of its own
+   width on each side (transform-origin: center splits the growth evenly).
+   Slide every card after it right by that same amount, and every card
+   before it left, so a gap opens up instead of the grown card overlapping
+   its neighbors. Same sibling-push technique as the home page's big menu
+   hover, just horizontal instead of vertical. */
+.photo-strip__item:hover ~ .photo-strip__item {
+  transform: translateX(calc(var(--card-w) * (var(--card-grow) - 1) / 2));
+}
+.photo-strip__item:has(~ .photo-strip__item:hover) {
+  transform: translateX(calc(var(--card-w) * (var(--card-grow) - 1) / -2));
+}
+
+/* Card width is derived so exactly --strip-visible cards fill the viewport
+   width at a time (viewport minus the two outer edges minus the gaps
+   between them, divided by the count). Card height is derived so the two
+   rows (Analog/Digital) split whatever vertical space is left after the
+   page bleed and the center menu gap are taken out — i.e. images grow to
+   fill right up to that empty center band, edge to edge.
+   `.photo-strip__cover` is a <span> — needs `display:block` or
+   width/height/overflow-clipping don't apply to it at all (percentage
+   sizing on the <img> inside would instead skip straight past this inline
+   box to the next block ancestor, which is how this broke when the old
+   fixed-width rule was removed from the item). */
+.photo-strip__cover {
+  display: block;
+  position: relative;
+  /* -20px total now, in two rounds — matches the width formula above
+     (was +80px, now +60px). */
+  height: calc(((100svh - (2 * var(--page-bleed)) - var(--menu-gap) - (2 * var(--strip-chrome))) / 2) - 20px);
+  width: var(--card-w);
+  overflow: hidden;
+  background: #ececec;
+  transform-origin: center;
+  transition: transform 0.4s var(--ease);
+}
+/* The whole card grows a little under the cursor (was just an inner-image
+   zoom clipped inside a fixed box before — now the box itself scales up). */
+.photo-strip__item:hover .photo-strip__cover {
+  transform: scale(var(--card-grow));
+}
+.photo-strip__cover img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.photo-strip__caption {
+  display: block;
+  margin-top: 0.65rem;
+  font-size: 0.68rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--fg);
+}
+
+@media (max-width: 720px) {
+  /* Same formulas as desktop (width/height stay derived, not fixed) —
+     just fewer cards on screen at once so they don't get too narrow. */
+  .photo-strip { --strip-visible: 2; }
+}
+
+/* --- individual collection page (photo-collection.html) --- */
+
+.collection-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 2px;
+  margin: clamp(2rem, 5vw, 3rem) var(--edge) 0;
+}
+.collection-grid__item {
+  aspect-ratio: 3 / 4;
+  overflow: hidden;
+  background: #ececec;
+}
+.collection-grid__item img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+@media (max-width: 900px) {
+  .collection-grid { grid-template-columns: repeat(2, 1fr); }
+}
+@media (max-width: 520px) {
+  .collection-grid { grid-template-columns: 1fr; }
+}

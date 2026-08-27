@@ -1,0 +1,272 @@
+/* Film — scrolling list on the left, each item a small looping preview
+   clip; a fixed "stage" fills the rest of the screen (behind the nav) and
+   plays that same clip large on hover/focus. Click goes to the project. */
+
+.film-page-body {
+  overflow-x: hidden;
+}
+
+.film-list-wrap {
+  position: relative;
+  z-index: 30; /* above the stage, below the nav (40) */
+  width: clamp(280px, 38vw, 560px);
+  min-height: 100vh;
+  background: var(--bg);
+  border-right: 1px solid var(--line);
+}
+
+.film-list {
+  display: flex;
+  flex-direction: column;
+  margin-top: var(--edge);
+  border-top: 1px solid var(--line);
+}
+
+.film-list__item {
+  display: block;
+  border-bottom: 1px solid var(--line);
+}
+.film-list__video-wrap {
+  display: block;
+  margin: 0 5px; /* 10px narrower total — a little bleed on each side
+                    instead of running edge-to-edge with the list column */
+  aspect-ratio: 16 / 9;
+  background: #111;
+  overflow: hidden;
+}
+.film-list__image,
+.film-list__video,
+.film-list__video-wrap .media-placeholder {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.6s var(--ease);
+}
+.film-list__item:hover .film-list__image,
+.film-list__item:hover .film-list__video {
+  transform: scale(1.035);
+}
+
+.film-list__caption {
+  display: block;
+  padding: 0.75rem var(--edge) 1rem;
+  font-size: 0.68rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--fg);
+  transition: color var(--dur) var(--ease);
+}
+.film-list__item:hover .film-list__caption,
+.film-list__item:focus-visible .film-list__caption {
+  color: #1440d6;
+}
+
+/* Fixed stage filling everything right of the list — empty/white until a
+   list item is hovered or focused. */
+.film-stage {
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: clamp(280px, 38vw, 560px);
+  z-index: 20;
+  background: var(--bg);
+  overflow: hidden;
+}
+.film-stage video {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 0;
+  transition: opacity 0.5s var(--ease);
+}
+.film-stage.is-active video {
+  opacity: 1;
+}
+
+@media (max-width: 900px) {
+  .film-stage { display: none; }
+  .film-list-wrap { width: 100%; border-right: none; }
+}
+
+/* --- individual project page — rebuilt to match a reference layout
+   Andreu sent: framed page (dark margin around a white "card", same
+   device as the earlier Index-page black-frame experiment, applied fresh
+   here), category/title top-left, brand centered, email+nav top-right,
+   info stacked bottom-left, one large video filling the right column.
+   Per explicit "vamos a hacer un layout algo parecido a esto" request. */
+
+.project-page-body {
+  background: var(--bg); /* white, matches every other page — was #0a0a0a
+                             (dark) showing through the frame's margin,
+                             changed per explicit "fondo blanco de todo ya
+                             que hay un recuadro blanco" request */
+  overflow-x: hidden;
+  overflow-y: visible;
+}
+
+.project-frame {
+  margin: clamp(0.6rem, 1.6vw, 1.1rem);
+  min-height: calc(100svh - 2 * clamp(0.6rem, 1.6vw, 1.1rem));
+  background: var(--bg);
+  color: var(--fg);
+  display: flex;
+  flex-direction: column;
+  font-family: var(--font-geist);
+}
+
+.project-top {
+  display: grid;
+  grid-template-columns: 1fr 1fr; /* "AV" center brand removed — was 1fr auto 1fr */
+  align-items: start;
+  gap: 1rem;
+  padding: calc(var(--edge) * 0.55) var(--edge); /* slimmer header — was
+    padding: var(--edge) on all sides, per explicit "hazlo un poco mas
+    estrecho" request; horizontal edge kept the same as the rest of the
+    site, only the vertical padding was cut down */
+  border-bottom: 1px solid var(--line);
+  font-size: 0.72rem;
+  letter-spacing: 0.04em;
+}
+.project-top__left {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+}
+.project-top__back {
+  color: var(--fg-soft);
+  text-decoration: none;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  font-size: 0.66rem;
+}
+.project-top__back:hover { color: var(--fg); }
+.project-top__category {
+  color: var(--fg-soft);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+.project-top__title {
+  font-weight: 400; /* Geist Mono's self-hosted @font-face only registers Regular — see the site-wide note on this */
+  text-transform: uppercase;
+  font-size: 0.85rem;
+}
+.project-top__right {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 0.3rem;
+  text-align: right;
+}
+.project-top__email {
+  color: var(--fg);
+  text-decoration: none;
+}
+.project-top__email:hover { color: var(--fg-soft); }
+.project-top__nav {
+  color: var(--fg-soft);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+.project-top__nav a { color: var(--fg-soft); text-decoration: none; }
+.project-top__nav a:hover,
+.project-top__nav a[aria-current="page"] { color: var(--fg); }
+
+.project-columns {
+  flex: 1;
+  min-height: 0; /* same flex-item fix as the Index page's stills — see css/index-sheet.css */
+  display: grid;
+  /* Left column just needs enough width for the info text (it was sitting
+     mostly empty at 50/50) — capping it and giving the rest to the video
+     column makes the video box closer to the embed's real 16:9 aspect
+     ratio, cutting down the letterbox bars. Per explicit "haz la caja
+     mas ancha" request. */
+  grid-template-columns: minmax(300px, 420px) 1fr;
+}
+.project-columns__left {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  gap: clamp(1.5rem, 4vh, 2.5rem);
+  padding: var(--edge);
+}
+.project-info h3 {
+  margin: 0 0 0.6rem;
+  font-size: 0.66rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--fg-soft);
+}
+.project-info p {
+  margin: 0;
+  font-size: 0.82rem;
+  line-height: 1.6;
+  max-width: 42ch;
+}
+.project-info dl {
+  margin: 0;
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 0.45rem 1.25rem;
+}
+.project-info dt {
+  font-size: 0.66rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--fg-soft);
+}
+.project-info dd {
+  margin: 0;
+  font-size: 0.78rem;
+}
+
+.project-columns__right {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--bg); /* white, same "fondo blanco de todo" request —
+                             matches the Film list page's stage, which
+                             also uses --bg instead of black */
+  overflow: hidden;
+}
+/* The box itself isn't always 16:9 (its size comes from the grid column/
+   frame height, which varies by viewport), and neither is every video —
+   Capsule 3 is a vertical clip. A single fixed CSS aspect-ratio couldn't
+   letterbox AND pillarbox depending on the project, so the real pixel
+   size is computed and set inline by fitProjectEmbed() in film-project.js
+   instead — this just needs to not force any size of its own. */
+.project-columns__right iframe,
+.project-columns__right .media-placeholder {
+  border: 0;
+}
+
+.project-nav {
+  display: flex;
+  justify-content: space-between;
+  padding: clamp(1rem, 3vh, 1.5rem) var(--edge);
+  border-top: 1px solid var(--line);
+  font-size: 0.68rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+.project-nav a { color: var(--fg); text-decoration: none; }
+.project-nav a:hover { color: var(--fg-soft); }
+
+@media (max-width: 820px) {
+  .project-top {
+    grid-template-columns: 1fr;
+    justify-items: start;
+    gap: 0.75rem;
+  }
+  .project-top__right { align-items: flex-start; text-align: left; }
+
+  .project-columns { grid-template-columns: 1fr; }
+  /* No forced 16:9 here anymore — the iframe/placeholder now carries its
+     own real per-project aspect-ratio inline (see film-project.js), so
+     the box just sizes to that instead of clamping to a ratio that may
+     not match and reintroducing bars. */
+  .project-columns__left { justify-content: flex-start; }
+}

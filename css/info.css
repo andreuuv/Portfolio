@@ -1,0 +1,379 @@
+/* Info — same composition language as the other pages: portrait dead
+   center, tagline pinned to the left, same height as the nav, but NOT
+   fixed — absolute within the hero, so it scrolls away with the page
+   just like the nav does — and "Based in Barcelona…" centered at the
+   top. */
+
+body.info-page-body {
+  font-family: var(--font-geist);
+  overflow-x: hidden;
+  /* Height of .info-top, used to keep the fixed bar from covering the
+     hero content underneath it and to keep the nav lined up with the
+     tagline (both below reference this same number). */
+  --topbar-h: calc(2 * var(--edge) + 15px);
+  /* Focus's left edge sits on this x (was also shared with the photo's
+     position at one point — the photo now uses --edge directly instead). */
+  --focus-x: calc(50% - (clamp(220px, 20vw, 320px) / 2) + 70px); /* was +150px — moved left */
+}
+
+.info-top {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 40;
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  gap: 1rem;
+  padding: var(--edge);
+  font-size: 0.68rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--fg-soft);
+  background: var(--bg);
+}
+.info-top__location {
+  justify-self: center;
+  text-align: center;
+}
+.info-top__email {
+  justify-self: end;
+}
+.info-top__email:hover { color: var(--fg); }
+
+/* Tagline: styled like the nav (Geist Mono, same gradient hover), pinned
+   to the left edge, same height as the nav — and now NOT fixed, per
+   explicit request ("la quiero sin fijar a la misma altura que el menu").
+   Overrides the shared .page-contact default (which is position:fixed)
+   the same way .site-nav--absolute-center overrides the nav — absolute
+   within .info-hero, so it scrolls away with the page instead of
+   trailing you the whole way down. This has flip-flopped a couple of
+   times already; if it needs to go back to fixed, that's just deleting
+   this override. */
+.info-tagline {
+  position: absolute !important;
+}
+
+.info-hero {
+  position: relative;
+  /* Shorter than a full viewport on purpose (was 100svh) — leaves a
+     visible sliver of Focus/Education peeking in at the bottom of the
+     first screen, as a "there's more, scroll down" cue. Portrait/nav/
+     tagline are all centered *within this box*, not the viewport, so they
+     shift up together with it and stay in sync with each other (the
+     tagline used to be position:fixed against the viewport instead, which
+     is what made this safe to shorten — see .info-tagline above). */
+  min-height: 88svh;
+  padding-top: var(--topbar-h);
+}
+
+.info-portrait {
+  position: absolute;
+  left: 50%;
+  top: 50%; /* .info-top is fixed and out of flow now, so the hero is
+               exactly 100svh tall and plain 50% is already centered
+               on the visible viewport */
+  transform: translate(-50%, -50%);
+  width: clamp(220px, 20vw, 320px);
+  aspect-ratio: 262 / 386; /* measured from andreuuv.xyz/info/ */
+  overflow: hidden;
+  background: #ececec;
+  transition: transform 1.6s var(--ease);
+}
+.info-portrait img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+/* Plain hover: tilts + zooms in while the cursor is over it, eases back
+   to normal on mouseleave (was sticky — stayed tilted forever once
+   triggered — reverted per explicit request). */
+.info-portrait:hover {
+  transform: translate(-50%, -50%) rotate(-4deg) scale(1.08);
+}
+
+.info-available {
+  position: absolute;
+  /* "top" is a fixed length (not a %), so — unlike the portrait/nav —
+     it doesn't automatically clear the fixed .info-top bar on its own;
+     add that height back in explicitly. */
+  top: calc(var(--topbar-h) + clamp(2rem, 6vh, 4rem));
+  right: calc(var(--edge) + 2.5rem);
+  text-align: center;
+}
+.info-available h2 {
+  margin: 0;
+  font-family: var(--font-display); /* same face as Home's big bottom-left menu */
+  font-size: clamp(1rem, 2.2vw, 1.3rem);
+  letter-spacing: 0.03em;
+  text-transform: none; /* Epoch reads better in its natural casing, like the Home menu */
+  /* Epoch.otf only ships weight 400 — 700 would force a synthetic/fake
+     bold (same lesson learned on Home's big menu). */
+  font-weight: 400;
+  white-space: nowrap;
+}
+.info-available p {
+  margin: 0.3rem 0 0;
+  font-family: var(--font-display); /* same face as Home's big bottom-left menu */
+  font-size: clamp(0.9rem, 1.8vw, 1.1rem);
+  letter-spacing: 0.03em;
+  text-transform: none; /* Epoch reads better in its natural casing, like the Home menu */
+  /* Epoch.otf only ships weight 400 — 700 would force a synthetic/fake
+     bold (same lesson learned on Home's big menu). */
+  font-weight: 400;
+  white-space: nowrap;
+}
+
+.info-bio {
+  position: absolute;
+  bottom: clamp(3rem, 10vh, 6rem);
+  right: var(--edge);
+  max-width: 36ch;
+  text-align: left;
+}
+.info-bio__mark {
+  font-family: var(--font-hand);
+  font-size: 2.4rem;
+  line-height: 1;
+  margin-bottom: -1.4rem; /* was -0.75rem, then -1.1rem — pulled in further still */
+  display: inline-block;
+  /* Nudged up in two rounds now (3px, then +5px more), away from the text
+     below, per explicit follow-up requests for a little more separation
+     from the heavy overlap above. */
+  transform: rotate(-3deg) translateY(-8px);
+}
+.info-bio p {
+  font-size: 0.82rem;
+  line-height: 1.85;
+  letter-spacing: 0.01em;
+  text-transform: uppercase;
+  /* Overlapping the mark on purpose, per explicit request (was 0.9rem,
+     then 0.2rem, then -0.15rem — pushed further negative still). */
+  margin: -0.4rem 0 0;
+}
+
+/* Focus / Education — Focus lines up under the portrait's left edge,
+   Education sits under/near the Bio block. Staggered diagonally (Focus
+   up, Education down — "zigzag", like a TikTok feed) per explicit
+   request, so there's a deliberate reason to scroll and the two feel like
+   separate beats instead of one row. The Contact photo now lives in here
+   too (moved from .info-contact per explicit "put the image where I
+   marked it" follow-up) — big, left-aligned, near the top of the section.
+   min-height enlarged to fit all three without the next section
+   (.info-contact) colliding into it. */
+.info-more {
+  position: relative;
+  padding: 0 var(--edge) clamp(3rem, 8vh, 5rem);
+  min-height: clamp(26rem, 40vh, 32rem);
+}
+.info-more__photo {
+  position: absolute;
+  left: var(--edge);
+  top: -15px; /* was -40px — lowered ~25px per explicit request */
+  width: clamp(240px, 26vw, 360px); /* was clamp(300px, 34vw, 460px) — sized down per explicit request */
+}
+.info-more__photo img {
+  display: block;
+  width: 100%;
+  height: auto; /* native aspect ratio — no aspect-ratio/object-fit crop */
+}
+.info-more__col {
+  position: absolute;
+  min-width: 14rem;
+}
+.info-more__col--focus {
+  left: var(--focus-x);
+  top: -50px;
+}
+.info-more__col--education {
+  right: calc(var(--edge) + 6rem);
+  top: 120px;
+}
+.info-more__mark {
+  font-family: var(--font-hand);
+  font-size: 2.4rem;
+  line-height: 1;
+  margin-bottom: -1.4rem; /* was -0.75rem, then -1.1rem — pulled in further still */
+  display: inline-block;
+  /* Nudged up in two rounds now (3px, then +5px more), away from the text
+     below, per explicit follow-up requests for a little more separation
+     from the heavy overlap above. */
+  transform: rotate(-3deg) translateY(-8px);
+}
+.info-more__list {
+  /* Overlapping the mark on purpose, per explicit request (was 0.9rem,
+     then 0.2rem, then -0.15rem — pushed further negative still). */
+  margin: -0.4rem 0 0;
+  padding: 0;
+  list-style: none;
+  font-size: 0.82rem;
+  line-height: 1.85;
+  letter-spacing: 0.01em;
+  text-transform: uppercase;
+  max-width: 32ch;
+}
+.info-more__list li {
+  padding-left: 1.2em;
+  text-indent: -1.2em;
+}
+.info-more__list li::before {
+  content: '• ';
+  color: var(--fg-soft);
+}
+
+/* Contact — rebuilt to match a reference layout Andreu sent (big title +
+   arrow icon, divider, label/value rows, social links row) per explicit
+   "vamos a cambiar el layout" request. Replaces both the old giant
+   email/CTA statement (Bebas Neue, then Geist Mono — see git history if
+   that's ever wanted back) and the standalone .info-socials nav that used
+   to sit above this section (its 3 links live here now instead, so they
+   only appear once on the page). No phone/address rows and no photo, per
+   explicit request — just Mail + an Instagram DM link, everything
+   left-justified (the reference right-aligns its row values; this
+   deliberately doesn't). */
+.info-contact {
+  padding: clamp(3rem, 8vh, 5rem) var(--edge) clamp(4rem, 12vh, 7rem);
+  border-top: 1px solid var(--line);
+  font-family: var(--font-geist);
+}
+
+.info-contact__head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1.5rem;
+  padding-bottom: clamp(1.5rem, 4vh, 2.5rem);
+  border-bottom: 1px solid var(--line);
+}
+.info-contact__title {
+  margin: 0;
+  max-width: 22ch;
+  font-weight: 400; /* Geist Mono's self-hosted @font-face only registers Regular — see the site-wide note on this */
+  font-size: clamp(1.6rem, 5vw, 3.25rem);
+  line-height: 1.05;
+  letter-spacing: -0.01em;
+}
+.info-contact__arrow {
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: clamp(2.5rem, 5vw, 3.75rem);
+  height: clamp(2.5rem, 5vw, 3.75rem);
+  color: var(--fg);
+  transition: color var(--dur) var(--ease), transform var(--dur) var(--ease);
+}
+.info-contact__arrow svg { width: 60%; height: 60%; }
+.info-contact__arrow:hover {
+  color: var(--fg-soft);
+  transform: translate(0.15em, -0.15em);
+}
+
+.info-contact__rows {
+  display: flex;
+  flex-direction: column;
+}
+.info-contact__row {
+  display: flex;
+  align-items: baseline;
+  gap: clamp(1.5rem, 5vw, 3rem);
+  padding: clamp(0.9rem, 2.5vh, 1.4rem) 0;
+  border-bottom: 1px solid var(--line);
+}
+.info-contact__row-label {
+  flex: 0 0 auto;
+  min-width: 8ch;
+  font-size: 0.72rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--fg-soft);
+}
+.info-contact__row-value {
+  color: var(--fg);
+  text-decoration: none;
+  font-size: clamp(0.95rem, 2vw, 1.15rem);
+}
+.info-contact__row-value:hover { color: var(--fg-soft); }
+
+.info-contact__socials {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4em 1.5em;
+  margin-top: clamp(2rem, 6vh, 3rem);
+  font-size: 0.78rem;
+  letter-spacing: 0.04em;
+}
+.info-contact__socials a { color: var(--fg); text-decoration: none; }
+.info-contact__socials a:hover { color: var(--fg-soft); }
+
+@media (max-width: 820px) {
+  body.info-page-body {
+    /* .info-top wraps to two rows on mobile, so it's taller — keep this
+       in sync with its real height. */
+    --topbar-h: 6.5rem;
+  }
+
+  .info-top { grid-template-columns: 1fr; gap: 0.4rem; text-align: center; }
+  .info-top__location { grid-row: 1; }
+  .info-top__email { justify-self: center; grid-row: 2; }
+
+  .info-tagline {
+    position: static;
+    transform: none;
+    display: block;
+    margin: calc(var(--topbar-h) + 1.5rem) auto 0;
+    max-width: 26ch;
+    text-align: center;
+    white-space: normal;
+    background-position: 0% 0% !important;
+  }
+
+  .info-hero {
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2rem;
+    padding: calc(var(--topbar-h) + 1.5rem) var(--edge) 3rem;
+  }
+  .info-portrait,
+  .info-available,
+  .info-bio {
+    position: static;
+    transform: none;
+    inset: auto;
+    max-width: 100%;
+    width: 70%;
+    text-align: center;
+  }
+  .info-available h2,
+  .info-available p {
+    white-space: normal;
+  }
+  .info-bio { text-align: left; }
+
+  .info-more {
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2.5rem;
+    padding: 2rem var(--edge) 3rem;
+    text-align: center;
+  }
+  .info-more__photo,
+  .info-more__col,
+  .info-more__col--focus,
+  .info-more__col--education {
+    position: static;
+    inset: auto;
+  }
+  .info-more__photo {
+    width: 80%;
+  }
+  .info-contact__row {
+    flex-direction: column;
+    gap: 0.3rem;
+  }
+}

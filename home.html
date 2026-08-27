@@ -1,0 +1,95 @@
+<meta charset="UTF-8">
+<title>Andreu Virgil — Cinematographer, Photographer &amp; Colorist</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Andreu Virgil — Director of Photography, photographer and colorist based in Barcelona, available for international work.">
+<link rel="icon" type="image/webp" href="assets/images/favicon.webp">
+<link rel="stylesheet" href="css/style.css">
+<link rel="stylesheet" href="css/home.css">
+
+<body>
+
+  <header class="hero">
+    <video id="hero-video" class="hero-video"
+      autoplay muted loop playsinline webkit-playsinline="true" preload="auto"
+      disablePictureInPicture disableRemotePlayback
+      controlsList="nodownload nofullscreen noremoteplayback noplaybackrate"
+      poster="assets/images/home-poster.webp">
+      <!-- Was also offering a home-reel.webm source — removed, that file
+           was never actually created (dead reference, and browsers only
+           need one working source anyway: this mp4 loads on its own). -->
+      <source src="assets/video/home-reel.mp4" type="video/mp4">
+    </video>
+    <div class="hero__scrim" aria-hidden="true"></div>
+
+    <span class="hero__available">Available International</span>
+
+    <nav class="site-nav site-nav--overlay site-nav--corner" aria-label="Primary">
+      <a class="site-nav__brand" href="home.html">Andreu Virgil</a>
+      <div class="site-nav__links">
+        <a href="film.html">Cinematography</a>
+        <a href="photography.html">Photography</a>
+        <a href="info.html">About Me</a>
+        <a href="index.html">Index</a>
+      </div>
+      <button class="site-nav__menu-toggle" type="button" data-menu-open>Menu</button>
+    </nav>
+
+    <nav class="hero__big-menu" aria-label="Primary large">
+      <div class="hero__big-menu__item">
+        <a class="hero__big-menu__link" href="film.html">Cinematography</a>
+        <span class="hero__big-menu__num">001</span>
+      </div>
+      <div class="hero__big-menu__item">
+        <a class="hero__big-menu__link" href="photography.html">Photography</a>
+        <span class="hero__big-menu__num">002</span>
+      </div>
+      <div class="hero__big-menu__item">
+        <a class="hero__big-menu__link" href="info.html">About Me</a>
+        <span class="hero__big-menu__num">003</span>
+      </div>
+      <div class="hero__big-menu__item">
+        <a class="hero__big-menu__link" href="index.html">Index</a>
+        <span class="hero__big-menu__num">004</span>
+      </div>
+    </nav>
+
+    <button class="hero__control" id="hero-control" type="button" aria-label="Play or pause background video">
+      <span class="hero__control-text">Pause</span>
+    </button>
+  </header>
+
+  <!-- ============ Overlay menu (mobile nav + INDEX) ============ -->
+  <div class="overlay-menu" id="overlay-menu" aria-hidden="true">
+    <div class="overlay-menu__top">
+      <a class="label" href="index.html">Index</a>
+      <button class="overlay-menu__close" type="button" data-menu-close>Close</button>
+    </div>
+    <div class="overlay-menu__body">
+      <div>
+        <div class="overlay-menu__group-title">Work</div>
+        <div class="overlay-menu__links">
+          <a href="film.html">Cinematography</a>
+          <a href="photography.html">Photography</a>
+        </div>
+        <div class="overlay-menu__sub">
+          <a href="photography.html#analog">Analog</a>
+          <a href="photography.html#digital">Digital</a>
+        </div>
+      </div>
+      <div>
+        <div class="overlay-menu__group-title">Studio</div>
+        <div class="overlay-menu__links">
+          <a href="info.html">About Me</a>
+          <a href="home.html">Home</a>
+        </div>
+      </div>
+    </div>
+    <div class="overlay-menu__bottom">
+      <a href="mailto:andreu.urgeles22@gmail.com">andreu.urgeles22@gmail.com</a>
+      <span>Barcelona · Available for international</span>
+    </div>
+  </div>
+
+  <script src="js/nav.js"></script>
+  <script src="js/home.js"></script>
+</body>

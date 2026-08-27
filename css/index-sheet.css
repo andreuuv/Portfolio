@@ -1,0 +1,309 @@
+/* Index — "album sheet" page (separate from Home), reached from every
+   nav's "Index" link. Originally built to match a specific reference
+   image exactly (a thick black rounded frame around a cream sheet,
+   Inter Bold typography) — since simplified back toward the site's own
+   visual language per explicit follow-up request ("mantener esa
+   coherencia estética"): plain white background, the standard inner-page
+   nav in its usual spot, no frame. The reference's grid/typography ideas
+   (header/tracklist layout, Inter Bold) stayed; the frame device and the
+   custom nav treatment didn't.
+
+   Layout: metadata header + tracklist + label line sit in the top ~half
+   of the viewport with the site's normal --edge margins, the standard
+   nav floats fixed in the gap below that (vertically centered, right
+   edge — identical position/classes to Photography's nav, which floats
+   in the gap between its two filmstrips the same way), and the two
+   stills fill everything from there down to the true bottom of the page,
+   edge to edge with no page margin on any side. */
+
+.index-page-body {
+  background: var(--bg); /* plain white — matches every other page now */
+  overflow-x: hidden;
+}
+
+.index-sheet {
+  /* Was min-height only — that left the container's height undefined
+     whenever content wanted to be taller, which is exactly what let the
+     portrait-shaped still video (1080x1920) below inflate this whole
+     section: with no definite height to flex-grow against, .index-stills
+     fell back to sizing itself off its video's own intrinsic aspect
+     ratio instead of the space actually available. A real height caps
+     that and lets .index-stills (flex: 1) correctly shrink to fill only
+     what's left after the header/tracklist above — fixes both the
+     unwanted scroll and the "make the boxes shorter" request in one go. */
+  height: 100svh;
+  min-height: 100svh;
+  display: flex;
+  flex-direction: column;
+}
+
+.index-sheet__top {
+  min-height: 52svh;
+  padding: var(--edge);
+  display: flex;
+  flex-direction: column;
+  /* Pushed up to the top of this block instead of vertically centered —
+     per explicit "sube toda la cuadrícula hacia arriba" follow-up (the
+     label/contact line that used to anchor the bottom of this block is
+     gone now too, see index.html). */
+  justify-content: flex-start;
+  gap: clamp(1.5rem, 3.5vh, 2.5rem);
+}
+
+/* ---------- header: director/role, based/available, big title ---------- */
+
+.index-meta {
+  display: grid;
+  grid-template-columns: auto auto 1fr;
+  gap: 0.6rem clamp(2rem, 6vw, 5rem);
+  align-items: start;
+  /* Switched from Inter back to the main nav's own typeface (Geist Mono),
+     per explicit "la tipografia de el menu principal" follow-up — this
+     header block reads as one voice with the nav now instead of standing
+     apart from it. */
+  font-family: var(--font-geist);
+}
+.index-meta__group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+.index-meta__row {
+  margin: 0;
+  font-size: clamp(0.68rem, 1vw, 0.78rem);
+  letter-spacing: 0.01em;
+  text-transform: uppercase;
+  /* Back to Geist Mono (matching the nav) — briefly tried Epoch here to
+     match the name, reverted per explicit "volvemos como antes" follow-
+     up. Only .index-meta__title h1 (the name itself) stays on Epoch now. */
+  font-family: var(--font-geist);
+  /* Regular weight — Geist Mono's self-hosted @font-face here only
+     registers the Regular instance (see css/style.css), so a bold weight
+     would force a synthetic/fake bold instead of a real one. */
+  font-weight: 400;
+}
+.index-meta__row a { color: inherit; text-decoration: none; }
+.index-meta__row a:hover { color: var(--fg-soft); }
+.index-meta__label {
+  display: inline-block;
+  margin-right: 0.5em;
+}
+
+.index-meta__title {
+  grid-column: 3;
+  text-align: right;
+}
+.index-meta__title h1 {
+  margin: 0;
+  /* Just the name specifically — Home's big bottom-left menu face
+     (Epoch, fallback Oswald), per explicit follow-up request. Everything
+     else in this header (Portfolio/year, Director/Role/Based/Available)
+     stays on Geist Mono, matching the nav — see the rules above. */
+  font-family: var(--font-display);
+  font-weight: 400; /* Epoch.otf only ships weight 400 — see css/style.css's note on Home's menu for why not bolder */
+  text-transform: uppercase;
+  font-size: clamp(1.1rem, 2vw, 1.5rem);
+  letter-spacing: -0.01em;
+  line-height: 1.15;
+}
+.index-meta__year {
+  display: block;
+  margin-top: 0.3rem;
+  font-family: var(--font-geist);
+  font-weight: 400;
+  font-size: clamp(0.68rem, 1vw, 0.78rem);
+  letter-spacing: 0.01em;
+  text-transform: uppercase;
+}
+
+/* ---------- tracklist: selected work, one row per film project ---------- */
+
+.index-track {
+  display: flex;
+  flex-direction: column;
+  /* Switched from Inter to the site's most-used typeface (Geist Mono —
+     same as the nav) per explicit follow-up request. Title gets its own
+     override below (Epoch), everything else here (No/Director/Role/
+     Client) inherits this. */
+  font-family: var(--font-geist);
+}
+.index-track__head,
+.index-track__row {
+  display: grid;
+  /* Role and Client were clipping real values ("DOP, Colorist", "Dreta de
+     l'Eixample") behind the ellipsis — widened both so the full text
+     always shows, per explicit "que se vea todos los role al completo"
+     request (Client had the same problem, fixed alongside it). Director
+     widened again once Reflections of Memory got a real co-director
+     credit ("Andreu Virgil, Lucia Gonzalez", 29 characters — the old
+     14ch was sized for a single name). Title still shrinks first via
+     minmax(0, 1fr) to make room. */
+  grid-template-columns: 3.5ch minmax(0, 1fr) 30ch 15ch 22ch;
+  gap: 1.25rem;
+  align-items: baseline;
+  text-align: left;
+}
+.index-track__head {
+  padding-bottom: 0.6rem;
+  /* Regular weight — both Geist Mono and Epoch only ship a Regular
+     instance here (see the font-family notes above), so 700 would force
+     a synthetic/fake bold instead of a real one. */
+  font-weight: 400;
+  font-size: 0.72rem;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  color: var(--fg-soft);
+}
+
+.index-track__body { display: flex; flex-direction: column; }
+.index-track__row {
+  /* More breathing room per row — was 0.3rem, per explicit "deja más
+     espacio para las características" follow-up (there's more room to
+     spend now that the label line below this block is gone). */
+  padding: 0.6rem 0;
+  font-size: 0.82rem;
+  letter-spacing: 0.01em;
+  text-transform: uppercase;
+  /* Regular weight — same note as .index-track__head above (both Geist
+     Mono and Epoch here only ship one Regular instance). */
+  font-weight: 400;
+  color: var(--fg);
+  text-decoration: none;
+  opacity: 0.4;
+  transition: opacity var(--dur) var(--ease), color var(--dur) var(--ease);
+}
+/* Default rest state: one row (the first, see js/index-track.js) stands
+   out at full strength, the rest sit dimmed. */
+.index-track__row.is-active { opacity: 1; }
+/* Hovering/focusing any row takes over that highlight from whichever one
+   was active by default. Comes after .is-active so equal-specificity
+   hover wins for the row you're actually pointing at, and the (later,
+   more specific) "everyone else dims" rule below still catches the
+   previously-active row too. */
+.index-track__row:hover,
+.index-track__row:focus-visible {
+  opacity: 1;
+}
+.index-track__body:hover .index-track__row:not(:hover),
+.index-track__body:focus-within .index-track__row:not(:focus-visible) {
+  opacity: 0.4;
+}
+.index-track__title {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  /* Project titles specifically get Epoch (Home's bottom-left menu face)
+     instead of Geist Mono, per explicit follow-up request — everything
+     else in the row stays on Geist Mono (see .index-track above). */
+  font-family: var(--font-display);
+}
+.index-track__director,
+.index-track__role,
+.index-track__client { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.index-track__no { font-variant-numeric: tabular-nums; }
+
+/* ---------- bottom: two large stills, edge to edge ---------- */
+
+.index-stills {
+  position: relative;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: clamp(0.35rem, 1vw, 0.6rem);
+  flex: 1;
+  /* min-height: 0 overrides the flex-item default of min-height: auto,
+     which otherwise lets a tall intrinsic child (the portrait still
+     video) force this box bigger than its actual flex-allocated space —
+     see the .index-sheet comment above for the other half of that fix. */
+  min-height: 0;
+  /* No page margin on any side — reaches the true left/right/bottom edge
+     of the viewport, per explicit "no tengan sangrado con la página"
+     request. */
+}
+/* Default (rest) state — one video covering the whole area, above the
+   two-box hover stage underneath it. Fades out on hover instead of
+   being removed, so it's already warmed up/playing the instant it fades
+   back in on mouseleave. */
+.index-stills__default {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: opacity var(--dur) var(--ease);
+}
+.index-stills.is-previewing .index-stills__default {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.index-stills__item {
+  display: flex; /* centers a .is-portrait video that doesn't fill the box width */
+  align-items: center;
+  justify-content: center;
+  position: relative; /* so .index-stills__still can overlay the video exactly */
+  overflow: hidden;
+  background: #ececec;
+}
+.index-stills__item img,
+.index-stills__item video {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+/* Vertical/portrait preview clips (e.g. the Brandays capsules) don't get
+   cropped to fill the box — per explicit "no lo escales de ancho"
+   request, only the height is forced to match the box (so it lines up
+   with the still on the other side); width follows the video's own
+   native aspect ratio and just sits centered, narrower than the column.
+   Toggled in JS once the video's real dimensions are known
+   (loadedmetadata) — can't tell from the file alone until then. */
+.index-stills__item video.is-portrait {
+  width: auto;
+  object-fit: contain;
+}
+/* The right box's hover-preview still — sits on top of its video,
+   swapped in by js/index-track.js instead of the video itself so this
+   side always shows a static frame, never a second moving preview. */
+.index-stills__still {
+  position: absolute;
+  inset: 0;
+}
+
+.index-stills__controls {
+  position: absolute;
+  right: clamp(0.75rem, 2vw, 1.5rem);
+  bottom: clamp(0.75rem, 2vw, 1.5rem);
+  display: flex;
+  gap: 0.5rem;
+}
+.index-stills__btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.4rem;
+  height: 2.4rem;
+  border: none;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.85);
+  color: var(--fg);
+  cursor: pointer;
+  transition: background var(--dur) var(--ease);
+}
+.index-stills__btn:hover { background: #fff; }
+.index-stills__btn svg { width: 1.1rem; height: 1.1rem; }
+
+@media (max-width: 720px) {
+  .index-sheet__top { min-height: 0; padding: 1.1rem; gap: 1.5rem; }
+
+  .index-meta { grid-template-columns: 1fr 1fr; row-gap: 1.1rem; }
+  .index-meta__title { grid-column: 1 / -1; text-align: left; }
+
+  .index-track__head,
+  .index-track__row { grid-template-columns: 2.4ch minmax(0, 1fr) 5.5rem; }
+  .index-track__director,
+  .index-track__role { display: none; }
+
+  .index-stills { grid-template-columns: 1fr; }
+}

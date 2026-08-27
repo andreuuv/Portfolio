@@ -1,0 +1,146 @@
+<meta charset="UTF-8">
+<title>Info — Andreu Virgil</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Andreu Virgil — Spanish cinematographer, photographer and colorist based in Barcelona. Contact and CV.">
+<link rel="icon" type="image/webp" href="assets/images/favicon.webp">
+<link rel="stylesheet" href="css/style.css">
+<link rel="stylesheet" href="css/info.css">
+<script src="js/media-placeholder.js"></script>
+
+<body class="info-page-body">
+
+  <div class="info-top">
+    <span class="info-top__spacer" aria-hidden="true"></span>
+    <span class="info-top__location">Based in Barcelona · Available for international</span>
+    <a class="info-top__email" href="mailto:andreu.urgeles22@gmail.com">andreu.urgeles22@gmail.com</a>
+  </div>
+
+  <main class="info-hero">
+    <span class="page-contact info-tagline" aria-hidden="false">Spanish · Cinematographer, Photographer &amp; Colorist</span>
+
+    <nav class="site-nav site-nav--light site-nav--corner site-nav--absolute-center" aria-label="Primary">
+      <a class="site-nav__brand" href="home.html">Andreu Virgil</a>
+      <div class="site-nav__links">
+        <a href="film.html">Cinematography</a>
+        <a href="photography.html">Photography</a>
+        <a href="info.html" aria-current="page">About Me</a>
+        <a href="index.html">Index</a>
+      </div>
+      <button class="site-nav__menu-toggle" type="button" data-menu-open>Menu</button>
+    </nav>
+
+    <div class="info-portrait">
+      <img src="assets/images/info/portrait.webp" alt="Andreu Virgil"
+        data-fallback-label="assets/images/info/portrait.webp">
+    </div>
+
+    <div class="info-available">
+      <h2>Available for</h2>
+      <p>Editorial / Commercial / Music / Collaborations</p>
+    </div>
+
+    <div class="info-bio">
+      <span class="info-bio__mark">Bio</span>
+      <p>
+        Based in Barcelona, I work across photography, film and post-production.
+        I'm drawn to people, places and moments that carry something beyond what
+        is immediately visible. My work is about observing, experimenting and
+        finding a visual language of my own.
+      </p>
+    </div>
+  </main>
+
+  <section class="info-more">
+    <div class="info-more__photo">
+      <img src="assets/images/info/contact.webp" alt="" loading="lazy"
+        data-fallback-label="assets/images/info/contact.webp">
+    </div>
+    <div class="info-more__col info-more__col--focus">
+      <span class="info-more__mark">Focus</span>
+      <ul class="info-more__list">
+        <li>Cinematography</li>
+        <li>Photography</li>
+        <li>Color Grading</li>
+        <li>Video Editing</li>
+      </ul>
+    </div>
+    <div class="info-more__col info-more__col--education">
+      <span class="info-more__mark">Education</span>
+      <ul class="info-more__list">
+        <li>Master's Degree in Editing &amp; Post-Production</li>
+        <li>Master's Degree in Cinematography</li>
+        <li>Adobe Course in Graphic Design</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- Rebuilt to match a reference layout Andreu sent (big title + arrow,
+       divider, label/value contact rows, social links row below) — per
+       explicit "vamos a cambiar el layout" request. Replaces both the old
+       giant email/CTA statement and the standalone .info-socials nav that
+       used to sit above it (folded in here instead, so the social links
+       only appear once on the page). -->
+  <section class="info-contact">
+    <header class="info-contact__head">
+      <h2 class="info-contact__title">Let's Bring Your Ideas to Life</h2>
+      <a class="info-contact__arrow" href="mailto:andreu.urgeles22@gmail.com" aria-label="Email Andreu">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M6 18L18 6M18 6H9M18 6V15"/></svg>
+      </a>
+    </header>
+
+    <div class="info-contact__rows">
+      <div class="info-contact__row">
+        <span class="info-contact__row-label">Mail</span>
+        <a class="info-contact__row-value" href="mailto:andreu.urgeles22@gmail.com">andreu.urgeles22@gmail.com</a>
+      </div>
+      <div class="info-contact__row">
+        <span class="info-contact__row-label">Instagram</span>
+        <a class="info-contact__row-value" href="https://ig.me/m/andreuuv_" target="_blank" rel="noopener noreferrer">Message @andreuuv_</a>
+      </div>
+    </div>
+
+    <nav class="info-contact__socials" aria-label="Social">
+      <a href="https://www.instagram.com/andreuuv_/" target="_blank" rel="noopener noreferrer">/ Instagram</a>
+      <a href="https://www.linkedin.com/in/andreu-virgil-507486316/" target="_blank" rel="noopener noreferrer">/ LinkedIn</a>
+      <a href="https://www.behance.net/andreuuv/projects" target="_blank" rel="noopener noreferrer">/ Behance</a>
+    </nav>
+  </section>
+
+  <!-- ============ Overlay menu (mobile nav + INDEX) ============ -->
+  <div class="overlay-menu" id="overlay-menu" aria-hidden="true">
+    <div class="overlay-menu__top">
+      <a class="label" href="index.html">Index</a>
+      <button class="overlay-menu__close" type="button" data-menu-close>Close</button>
+    </div>
+    <div class="overlay-menu__body">
+      <div>
+        <div class="overlay-menu__group-title">Work</div>
+        <div class="overlay-menu__links">
+          <a href="film.html">Cinematography</a>
+          <a href="photography.html">Photography</a>
+        </div>
+        <div class="overlay-menu__sub">
+          <a href="photography.html#analog">Analog</a>
+          <a href="photography.html#digital">Digital</a>
+        </div>
+      </div>
+      <div>
+        <div class="overlay-menu__group-title">Studio</div>
+        <div class="overlay-menu__links">
+          <a href="info.html">About Me</a>
+          <a href="home.html">Home</a>
+        </div>
+      </div>
+    </div>
+    <div class="overlay-menu__bottom">
+      <a href="mailto:andreu.urgeles22@gmail.com">andreu.urgeles22@gmail.com</a>
+      <span>Barcelona · Available for international</span>
+    </div>
+  </div>
+
+  <script src="js/nav.js"></script>
+  <script src="js/info.js"></script>
+  <!-- js/info-fit.js dropped from this page — it only ever targeted the
+       old giant email/CTA statement, which this section replaced. Left
+       the file itself on disk in case that comes back. -->
+</body>

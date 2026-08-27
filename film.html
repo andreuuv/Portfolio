@@ -1,0 +1,73 @@
+<meta charset="UTF-8">
+<title>Film — Andreu Virgil</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Selected film work by Andreu Virgil — director of photography.">
+<link rel="icon" type="image/webp" href="assets/images/favicon.webp">
+<link rel="stylesheet" href="css/style.css">
+<link rel="stylesheet" href="css/film.css">
+<script src="js/media-placeholder.js"></script>
+
+<body class="film-page-body">
+
+  <nav class="site-nav site-nav--light site-nav--grouped site-nav--corner site-nav--pin-viewport" aria-label="Primary">
+    <a class="site-nav__brand site-nav__brand--grouped" href="home.html">Andreu Virgil</a>
+    <div class="site-nav__links">
+      <a href="film.html" aria-current="page">Cinematography</a>
+      <a href="photography.html">Photography</a>
+      <a href="info.html">About Me</a>
+      <a href="index.html">Index</a>
+    </div>
+    <button class="site-nav__menu-toggle" type="button" data-menu-open>Menu</button>
+  </nav>
+
+  <!-- Big preview stage: fills the area right of the list, behind the nav.
+       js/film.js swaps its video source on hover/focus of a list item. -->
+  <div class="film-stage" id="film-stage" aria-hidden="true">
+    <video id="film-stage-video" muted loop playsinline preload="none"></video>
+  </div>
+
+  <div class="film-list-wrap">
+    <div id="film-list" class="film-list"></div>
+  </div>
+
+  <!-- ============ Overlay menu (mobile nav + INDEX) ============ -->
+  <div class="overlay-menu" id="overlay-menu" aria-hidden="true">
+    <div class="overlay-menu__top">
+      <a class="label" href="index.html">Index</a>
+      <button class="overlay-menu__close" type="button" data-menu-close>Close</button>
+    </div>
+    <div class="overlay-menu__body">
+      <div>
+        <div class="overlay-menu__group-title">Work</div>
+        <div class="overlay-menu__links">
+          <a href="film.html">Cinematography</a>
+          <a href="photography.html">Photography</a>
+        </div>
+        <div class="overlay-menu__sub" id="index-film-list"></div>
+      </div>
+      <div>
+        <div class="overlay-menu__group-title">Studio</div>
+        <div class="overlay-menu__links">
+          <a href="info.html">About Me</a>
+          <a href="home.html">Home</a>
+        </div>
+      </div>
+    </div>
+    <div class="overlay-menu__bottom">
+      <a href="mailto:andreu.urgeles22@gmail.com">andreu.urgeles22@gmail.com</a>
+      <span>Barcelona · Available for international</span>
+    </div>
+  </div>
+
+  <script src="js/film.js"></script>
+  <script src="js/nav.js"></script>
+  <script>
+    fetch('data/projects.json').then(function (r) { return r.json(); }).then(function (projects) {
+      var list = document.getElementById('index-film-list');
+      if (!list) return;
+      list.innerHTML = projects.map(function (p) {
+        return '<a href="film-project.html?id=' + encodeURIComponent(p.id) + '">' + p.title + '</a>';
+      }).join('');
+    });
+  </script>
+</body>

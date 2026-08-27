@@ -1,0 +1,533 @@
+/* ==========================================================================
+   ANDREU VIRGIL — PORTFOLIO
+   Global stylesheet: tokens, reset, nav, footer, grids, utilities
+   ========================================================================== */
+
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,300;0,400;0,500;0,600;1,400&family=Zeyada&family=Oswald:wght@500;600;700&family=Space+Grotesk:wght@300;400;500&family=Bebas+Neue&family=Inter:wght@400;700;800&display=swap');
+
+/* Courier Prime — self-hosted from the files supplied by Andreu
+   (assets/fonts/courier-prime/), used for the home page's top-bar texts. */
+@font-face {
+  font-family: 'Courier Prime';
+  src: url('../assets/fonts/courier-prime/CourierPrime-Regular.ttf') format('truetype');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Courier Prime';
+  src: url('../assets/fonts/courier-prime/CourierPrime-Bold.ttf') format('truetype');
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Courier Prime';
+  src: url('../assets/fonts/courier-prime/CourierPrime-Italic.ttf') format('truetype');
+  font-weight: 400;
+  font-style: italic;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Courier Prime';
+  src: url('../assets/fonts/courier-prime/CourierPrime-BoldItalic.ttf') format('truetype');
+  font-weight: 700;
+  font-style: italic;
+  font-display: swap;
+}
+
+/* Geist Mono — self-hosted from the file supplied by Andreu
+   (assets/fonts/geist-mono/), used regular-weight for the home page's
+   top nav (name + Photography/Cinematography/Index/About Me). It's a
+   variable font; we only need the Regular instance here. */
+@font-face {
+  font-family: 'Geist Mono';
+  src: url('../assets/fonts/geist-mono/GeistMono-VariableFont_wght.ttf') format('truetype-variations');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* Epoch — self-hosted from the file supplied by Andreu
+   (assets/fonts/epoch/), used for the home page's bottom-left big menu
+   (Photography/Cinematography/Index/About me). */
+@font-face {
+  font-family: 'Epoch';
+  src: url('../assets/fonts/epoch/Epoch.otf') format('opentype');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* LEMON MILK — self-hosted from the file supplied by Andreu
+   (assets/fonts/lemon-milk/), used for the Info page's big email/CTA
+   statement. Only the Bold cut is installed (that's all that was asked
+   for). LICENSE NOTE: the free version is donationware — free for
+   personal/non-commercial use, requests a "pay what you want" donation
+   for commercial use (see assets/fonts/lemon-milk/LICENSE.txt) — this is
+   a commercial portfolio site, so a donation to the type designer
+   (marsnev@marsnev.com / marsnev.com) would be the right thing to do.
+   Also: the free cut has NO lowercase glyphs at all (uppercase-only) —
+   always pair with text-transform:uppercase, never render it lowercase. */
+@font-face {
+  font-family: 'LEMON MILK';
+  src: url('../assets/fonts/lemon-milk/LEMONMILK-Bold.otf') format('opentype');
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+:root {
+  --bg: #ffffff;
+  --fg: #0a0a0a;
+  --fg-soft: #6b6b6b;
+  --line: #e4e4e4;
+  --overlay-fg: #f5f5f5;
+  --overlay-fg-soft: rgba(245, 245, 245, 0.72);
+
+  --font-mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  --font-hand: 'Zeyada', cursive; /* matches the "Bio" mark on the real andreuuv.xyz */
+  --font-courier: 'Courier Prime', 'Courier New', ui-monospace, monospace;
+  --font-geist: 'Geist Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+  --font-display: 'Epoch', 'Oswald', ui-sans-serif, system-ui, sans-serif; /* home page's bottom-left big menu */
+  /* Info page's big email/CTA statement — Bebas Neue, from Google Fonts
+     (OFL license, no restrictions), per Andreu's exact Photoshop mockup
+     specs (font/size/tracking measured directly from his file). Tried
+     Epoch, Archivo Black, Space Grotesk, LEMON MILK, and Arial Black
+     before landing here. Single weight (Regular) — it's a condensed
+     display face, no bold cut needed or available. */
+  --font-square: 'Bebas Neue', ui-sans-serif, sans-serif;
+
+  --nav-gap: clamp(1.5rem, 4vw, 5.5rem);
+  --edge: clamp(1.25rem, 4vw, 3rem);
+  --max-w: 1800px;
+
+  --dur: 0.4s;
+  --ease: cubic-bezier(.16,.84,.44,1);
+}
+
+* { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--fg);
+  font-family: var(--font-mono);
+  font-weight: 400;
+  -webkit-font-smoothing: antialiased;
+  /* overflow-y must stay explicit: setting only overflow-x makes the UA
+     compute overflow-y as `auto`, which turns <body> into its own scroll
+     container instead of the viewport — and that breaks/repaints
+     `position: fixed` elements unreliably in some engines. */
+  overflow-x: hidden;
+  overflow-y: visible;
+}
+
+img, video { max-width: 100%; display: block; }
+
+a { color: inherit; text-decoration: none; }
+
+ul { list-style: none; margin: 0; padding: 0; }
+
+button {
+  font-family: inherit;
+  background: none;
+  border: none;
+  color: inherit;
+  cursor: pointer;
+  padding: 0;
+}
+
+.label {
+  font-size: 0.72rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.visually-hidden {
+  position: absolute;
+  width: 1px; height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+
+/* --------------------------------------------------------------------------
+   NAV — shared across every page. Two visual modes:
+   .site-nav--overlay  → light text over a photo/video (home)
+   .site-nav--light    → dark text on white background (inner pages)
+   -------------------------------------------------------------------------- */
+
+.site-nav {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 40;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: var(--nav-gap);
+  padding: 0 var(--edge);
+  font-family: var(--font-geist);
+  font-weight: 400;
+  /* This box spans the full viewport width (left:0; right:0) even though
+     the visible nav content only sits at the right edge — real bug found
+     on the Film page: with .site-nav--pin-viewport (position:fixed), that
+     empty left-hand strip was sitting on top of (and silently eating
+     hover/click on) any scrolling list content that happened to cross
+     the nav's vertical band, since a block's full box captures pointer
+     events even where nothing is visibly rendered there. pointer-events:
+     none here + auto on the actual interactive children (below) makes
+     only the real nav content clickable/hoverable, letting everything
+     else pass through to whatever's actually underneath. */
+  pointer-events: none;
+}
+.site-nav__brand,
+.site-nav__links a,
+.site-nav__menu-toggle {
+  pointer-events: auto;
+}
+
+.site-nav__brand {
+  margin-right: auto;
+  font-size: 0.78rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.site-nav__links {
+  display: flex;
+  align-items: center;
+  gap: var(--nav-gap);
+}
+
+/* Hover/current-page: the word sweeps from its resting color to a strong
+   blue, as a gradient — every page paints the same gradient on the text at
+   all times and only animates its position, so the color change reads as
+   gradual. --nav-hover-base is the resting color, set per nav variant. */
+.site-nav__links a,
+.site-nav__links button {
+  font-size: 0.72rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  position: relative;
+  background-image: linear-gradient(90deg,
+    var(--nav-hover-base) 0%, var(--nav-hover-base) 40%,
+    #4d8dff 70%, #1440d6 100%);
+  background-size: 260% 100%;
+  background-position: 0% 0%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: transparent;
+  transition: background-position 0.5s var(--ease);
+}
+.site-nav__links a:hover,
+.site-nav__links button:hover,
+.site-nav__links a[aria-current="page"] {
+  background-position: 100% 0%;
+}
+
+.site-nav--overlay { color: var(--overlay-fg); --nav-hover-base: var(--overlay-fg); }
+.site-nav--light {
+  color: var(--fg);
+  --nav-hover-base: var(--fg);
+  position: static;
+  transform: none;
+  padding: var(--edge);
+}
+
+/* Home hero nav: vertically centered in the hero, but pushed over to the
+   right edge (same --edge margin that .hero__available keeps on the left)
+   instead of centered horizontally. */
+.site-nav--corner {
+  top: 50%;
+  transform: translateY(-50%);
+  align-items: flex-start;
+  justify-content: flex-end;
+  gap: 1.75rem;
+}
+.site-nav--corner .site-nav__brand,
+.site-nav--corner .site-nav__links a,
+.site-nav--corner .site-nav__links button,
+.site-nav--corner .site-nav__menu-toggle {
+  padding-top: 0.15rem;
+}
+.site-nav--corner .site-nav__brand {
+  margin-right: 0;
+}
+.site-nav--corner .site-nav__links {
+  gap: 1.75rem;
+}
+@media (max-width: 720px) {
+  .site-nav--corner .site-nav__brand { display: none; }
+  .site-nav.site-nav--corner {
+    justify-content: flex-end;
+    top: var(--edge);
+    transform: none;
+  }
+}
+.site-nav--inline { color: var(--fg); --nav-hover-base: var(--fg); position: static; transform: none; padding: 0; justify-content: flex-start; }
+.site-nav--inline .site-nav__links { margin-left: auto; }
+
+/* Pins a nav to the viewport (not the page) so it stays put — centered
+   vertically, same edge margin as the home nav — while the page scrolls.
+   Combine with .site-nav--corner for the same layout as the home nav; keep
+   .site-nav--light/--overlay for the color scheme. */
+.site-nav--pin-viewport {
+  position: fixed !important;
+  padding: 0 var(--edge) !important;
+  /* Chromium can fail to repaint a fixed element that uses
+     background-clip:text (our gradient-hover links) while the page
+     scrolls, since scrolling is compositor-only and skips it. Forcing
+     this onto its own GPU layer keeps it repainting correctly. */
+  will-change: transform;
+  transform: translateY(-50%) translateZ(0);
+}
+
+/* Sits centered in the middle of its own section (needs a
+   position:relative ancestor, e.g. a hero wrapper) instead of the
+   viewport — so it looks the same at rest but scrolls away with the page
+   instead of tracking the scroll like .site-nav--pin-viewport does. */
+.site-nav--absolute-center {
+  position: absolute !important;
+  padding: 0 var(--edge) !important;
+}
+
+/* A single link mirroring the nav on the opposite edge — same font, same
+   position/size (fixed, vertically centered, same --edge margin) and the
+   same white/dark → blue gradient hover as the nav links. */
+.page-contact {
+  position: fixed;
+  left: var(--edge);
+  top: 50%;
+  z-index: 40;
+  font-family: var(--font-geist);
+  font-weight: 400;
+  font-size: 0.72rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  background-image: linear-gradient(90deg,
+    var(--nav-hover-base, var(--fg)) 0%, var(--nav-hover-base, var(--fg)) 40%,
+    #4d8dff 70%, #1440d6 100%);
+  background-size: 260% 100%;
+  background-position: 0% 0%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: transparent;
+  transition: background-position 0.5s var(--ease);
+  will-change: transform;
+  transform: translateY(-50%) translateZ(0);
+}
+.page-contact:hover {
+  background-position: 100% 0%;
+}
+@media (max-width: 720px) {
+  .page-contact { top: var(--edge); transform: translateZ(0); }
+}
+
+/* inner pages: nav sits inline at the top instead of centered over media */
+.page-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--edge);
+  gap: 1rem;
+}
+.page-header__meta {
+  font-size: 0.68rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--fg-soft);
+}
+
+@media (max-width: 720px) {
+  .site-nav__links { display: none; }
+  .site-nav { justify-content: space-between; }
+  .site-nav__brand { margin-right: 0; }
+  .site-nav__menu-toggle { display: inline-flex !important; }
+}
+
+/* Brand grouped in with the links (wherever it sits in the markup —
+   first or last) instead of pinned to the far left with the links pushed
+   to the far right — the whole nav sits together as one group. */
+.site-nav__brand--grouped {
+  margin-right: 0;
+}
+@media (max-width: 720px) {
+  .site-nav.site-nav--grouped { justify-content: flex-end; }
+}
+
+.site-nav__menu-toggle {
+  display: none;
+  font-size: 0.72rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+/* --------------------------------------------------------------------------
+   FULLSCREEN OVERLAY MENU (mobile nav + INDEX)
+   -------------------------------------------------------------------------- */
+
+.overlay-menu {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  background: var(--fg);
+  color: var(--overlay-fg);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: var(--edge);
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity var(--dur) var(--ease), visibility var(--dur);
+}
+.overlay-menu.is-open { opacity: 1; visibility: visible; }
+
+.overlay-menu__top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.overlay-menu__close {
+  font-size: 0.72rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.overlay-menu__body {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 2.5rem;
+}
+
+.overlay-menu__group-title {
+  font-size: 0.65rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--overlay-fg-soft);
+  margin-bottom: 0.9rem;
+}
+
+.overlay-menu__links {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.overlay-menu__links a {
+  font-size: clamp(1.4rem, 4vw, 2.4rem);
+  letter-spacing: 0;
+  text-transform: uppercase;
+  line-height: 1.35;
+  transition: opacity var(--dur) var(--ease), padding-left var(--dur) var(--ease);
+}
+.overlay-menu__links a:hover { opacity: 0.55; padding-left: 0.5rem; }
+
+.overlay-menu__sub {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem 1.5rem;
+  margin-top: 0.6rem;
+}
+.overlay-menu__sub a {
+  font-size: 0.72rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--overlay-fg-soft);
+}
+.overlay-menu__sub a:hover { color: var(--overlay-fg); }
+
+.overlay-menu__bottom {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.68rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--overlay-fg-soft);
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+.overlay-menu__bottom a:hover { color: var(--overlay-fg); }
+
+body.menu-open { overflow: hidden; }
+
+/* --------------------------------------------------------------------------
+   FOOTER
+   -------------------------------------------------------------------------- */
+
+.site-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: var(--edge);
+  font-size: 0.65rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--fg-soft);
+  border-top: 1px solid var(--line);
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+/* --------------------------------------------------------------------------
+   PLACEHOLDER MEDIA — shown until real assets are dropped in
+   -------------------------------------------------------------------------- */
+
+.media-placeholder {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  background:
+    repeating-linear-gradient(135deg, #ececec, #ececec 10px, #e2e2e2 10px, #e2e2e2 20px);
+  display: flex;
+  align-items: flex-end;
+  padding: 0.75rem;
+}
+.media-placeholder__label {
+  font-size: 0.62rem;
+  letter-spacing: 0.06em;
+  color: #8a8a8a;
+  line-height: 1.4;
+  word-break: break-all;
+}
+
+/* --------------------------------------------------------------------------
+   SECTION HEADINGS shared by inner pages
+   -------------------------------------------------------------------------- */
+
+.section-heading {
+  display: flex;
+  align-items: baseline;
+  gap: 1rem;
+  padding: 0 var(--edge);
+  margin: clamp(2.5rem, 6vw, 5rem) 0 1.5rem;
+}
+.section-heading h2 {
+  margin: 0;
+  font-size: clamp(1.1rem, 2.4vw, 1.6rem);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  font-weight: 500;
+}
+.section-heading span {
+  font-size: 0.68rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--fg-soft);
+}
+.section-heading::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: var(--line);
+}

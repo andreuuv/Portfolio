@@ -1,0 +1,162 @@
+/* Home — fullscreen looping video + overlay nav (matches ref screenshot 1) */
+
+.hero {
+  position: relative;
+  width: 100%;
+  height: 100svh;
+  min-height: 480px;
+  overflow: hidden;
+  background: #1a1a1a;
+}
+
+.hero-video {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+/* We drive play/pause ourselves (see .hero__control) — hide every native
+   overlay a browser might draw on top of the background video: Safari/iOS's
+   center "tap to play" button, and Chrome/Edge's cast + picture-in-picture
+   "watermark" icons that otherwise appear on hover even without `controls`. */
+.hero-video::-webkit-media-controls,
+.hero-video::-webkit-media-controls-start-playback-button,
+.hero-video::-webkit-media-controls-panel,
+.hero-video::-webkit-media-controls-picture-in-picture-button,
+.hero-video::-webkit-media-controls-overlay-play-button {
+  display: none !important;
+  -webkit-appearance: none;
+}
+.hero-video::-internal-media-controls-overlay-cast-button {
+  display: none !important;
+}
+
+.hero--no-video .hero-video { display: none; }
+.hero--no-video::before {
+  content: 'ADD BACKGROUND VIDEO — assets/video/home-reel.mp4';
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 2rem;
+  background: repeating-linear-gradient(135deg, #1c1c1c, #1c1c1c 10px, #181818 10px, #181818 20px);
+  color: rgba(255,255,255,0.4);
+  font-size: 0.72rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.hero__scrim {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgba(0,0,0,0.18) 0%, rgba(0,0,0,0) 30%, rgba(0,0,0,0) 65%, rgba(0,0,0,0.28) 100%);
+  pointer-events: none;
+}
+
+/* Bottom-right — the only playback control on the page; the browser's own
+   native center play affordance is hidden below since we drive playback
+   ourselves. */
+.hero__control {
+  position: absolute;
+  right: var(--edge);
+  bottom: var(--edge);
+  z-index: 40;
+  color: var(--overlay-fg);
+  font-size: 0.72rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+.hero__control::before {
+  content: '';
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: currentColor;
+  opacity: 0.85;
+}
+
+/* top-left: small "Available International" label */
+.hero__available {
+  position: absolute;
+  left: var(--edge);
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 40;
+  color: var(--overlay-fg-soft);
+  font-family: var(--font-geist);
+  font-weight: 400;
+  font-size: 0.72rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+/* bottom-left: large stacked menu (Photography / Cinematography / Index / About Me) */
+.hero__big-menu {
+  position: absolute;
+  left: var(--edge);
+  bottom: var(--edge);
+  z-index: 40;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.05em;
+}
+.hero__big-menu__item {
+  display: flex;
+  align-items: flex-start; /* number sits at the top of the big label, not on its baseline */
+  gap: 0.7rem;
+  transition: transform var(--dur) var(--ease);
+}
+.hero__big-menu__link {
+  display: inline-block;
+  color: var(--overlay-fg);
+  font-family: var(--font-display);
+  font-size: clamp(1.9rem, 5.4vw, 4rem);
+  line-height: 1.05;
+  letter-spacing: -0.01em;
+  text-transform: none; /* keep the natural casing written in the HTML (Photography, About me…) */
+  font-weight: 400; /* Epoch.otf only ships weight 400 — 500 forced a synthetic
+                        (fake) bold that masked the real typeface's strokes */
+  transform-origin: left center;
+  transition: transform var(--dur) var(--ease);
+}
+.hero__big-menu__num {
+  font-family: var(--font-display);
+  font-size: clamp(0.85rem, 1.6vw, 1.15rem);
+  font-weight: 500;
+  color: var(--overlay-fg-soft);
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.02em;
+  transition: opacity var(--dur) var(--ease);
+}
+
+/* Hover: the hovered label grows from its own center. Items further down
+   the list ease down a little and items further up ease up a little, so
+   the whole stack keeps an even margin around the enlarged one. */
+.hero__big-menu__item:hover .hero__big-menu__link {
+  transform: scale(1.16);
+}
+.hero__big-menu__item:hover .hero__big-menu__num {
+  opacity: 0; /* the enlarged label would otherwise cover its own number */
+}
+.hero__big-menu__item:hover ~ .hero__big-menu__item {
+  transform: translateY(0.55em);
+}
+.hero__big-menu__item:has(~ .hero__big-menu__item:hover) {
+  transform: translateY(-0.55em);
+}
+
+/* Top nav hover/typography is now shared site-wide — see css/style.css
+   (.site-nav__links gradient hover + --font-geist on .site-nav). */
+
+@media (max-width: 720px) {
+  .hero { height: 100svh; }
+  .site-nav:not(.site-nav--corner) { top: auto; bottom: 4.5rem; transform: none; }
+  .hero__big-menu__link { font-size: clamp(1.6rem, 9vw, 2.4rem); }
+}

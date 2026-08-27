@@ -1,0 +1,49 @@
+<meta charset="UTF-8">
+<title>Project — Andreu Virgil</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<link rel="icon" type="image/webp" href="assets/images/favicon.webp">
+<link rel="stylesheet" href="css/style.css">
+<link rel="stylesheet" href="css/film.css">
+
+<body class="project-page-body">
+
+  <main id="project-root">
+    <!-- filled by js/film-project.js from data/projects.json — layout
+         matches a reference Andreu sent (framed page, category/title top
+         left, brand centered, email+nav top right, info stacked bottom-
+         left, large video right) per explicit "vamos a hacer un layout
+         algo parecido a esto" request. -->
+  </main>
+
+  <!-- ============ Overlay menu (mobile nav + INDEX) ============ -->
+  <div class="overlay-menu" id="overlay-menu" aria-hidden="true">
+    <div class="overlay-menu__top">
+      <a class="label" href="index.html">Index</a>
+      <button class="overlay-menu__close" type="button" data-menu-close>Close</button>
+    </div>
+    <div class="overlay-menu__body">
+      <div>
+        <div class="overlay-menu__group-title">Work</div>
+        <div class="overlay-menu__links">
+          <a href="film.html">Cinematography</a>
+          <a href="photography.html">Photography</a>
+        </div>
+      </div>
+      <div>
+        <div class="overlay-menu__group-title">Studio</div>
+        <div class="overlay-menu__links">
+          <a href="info.html">About Me</a>
+          <a href="home.html">Home</a>
+        </div>
+      </div>
+    </div>
+    <div class="overlay-menu__bottom">
+      <a href="mailto:andreu.urgeles22@gmail.com">andreu.urgeles22@gmail.com</a>
+      <span>Barcelona · Available for international</span>
+    </div>
+  </div>
+
+  <script src="js/film-project.js"></script>
+  <script src="js/nav.js"></script>
+</body>
