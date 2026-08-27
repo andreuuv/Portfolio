@@ -7,7 +7,7 @@
     control.querySelector('.hero__control-text').textContent = text;
   }
 
-  // Video autoplays muted+looped by default (see home.html attributes).
+  // Video autoplays muted+looped by default (see index.html — the homepage — attributes).
   // The bottom-left control just lets the visitor pause / resume it.
   video.addEventListener('play', function () { label('Pause'); });
   video.addEventListener('pause', function () { label('Play'); });

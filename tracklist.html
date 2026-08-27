@@ -1,0 +1,132 @@
+<meta charset="UTF-8">
+<title>Index — Andreu Virgil</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Andreu Virgil — selected work index.">
+<link rel="icon" type="image/webp" href="assets/images/favicon.webp">
+<link rel="stylesheet" href="css/style.css">
+<link rel="stylesheet" href="css/index-sheet.css">
+<script src="js/media-placeholder.js"></script>
+
+<!-- ============================================================
+     WORK IN PROGRESS — basic first pass at the new "Index" page
+     (tracklist/album-sheet reference). Behaviour/animations not
+     wired up yet, waiting on Andreu's spec. See css/index-sheet.css
+     for notes on what's still a placeholder decision.
+     ============================================================ -->
+
+<body class="index-page-body">
+
+  <main class="index-sheet">
+    <div class="index-sheet__top">
+
+      <header class="index-meta">
+        <div class="index-meta__group">
+          <p class="index-meta__row"><span class="index-meta__label">Role:</span>DP, Photographer &amp; Colorist</p>
+        </div>
+        <div class="index-meta__group">
+          <p class="index-meta__row"><span class="index-meta__label">Based:</span>Barcelona</p>
+          <p class="index-meta__row"><span class="index-meta__label">Available:</span>International</p>
+        </div>
+        <div class="index-meta__title">
+          <h1>Andreu Virgil</h1>
+          <span class="index-meta__year">Portfolio — 2026</span>
+        </div>
+      </header>
+
+      <div class="index-track" role="table" aria-label="Selected work">
+        <div class="index-track__head" role="row">
+          <span class="index-track__no" role="columnheader">No</span>
+          <span class="index-track__title" role="columnheader">Title</span>
+          <span class="index-track__director" role="columnheader">Director</span>
+          <span class="index-track__role" role="columnheader">Role</span>
+          <span class="index-track__client" role="columnheader">Client</span>
+        </div>
+        <div class="index-track__body" id="index-track-body" role="rowgroup">
+          <!-- rows injected by js/index-track.js from data/projects.json -->
+        </div>
+      </div>
+
+    </div>
+
+    <div class="index-stills">
+      <!-- Default (rest) state: one single video spanning the whole area
+           — Home's own background reel, per explicit request ("me gusta
+           más así"). The two-box hover-preview stage below is hidden
+           behind this until a tracklist row is hovered/focused
+           (js/index-track.js toggles .is-previewing on .index-stills). -->
+      <video class="index-stills__default" src="assets/video/home-reel.mp4" muted loop playsinline autoplay disablePictureInPicture disableRemotePlayback data-fallback-label="assets/video/home-reel.mp4"></video>
+      <!-- Hover-preview stage for the tracklist above: left shows that
+           project's own preview clip, right swaps to a static still
+           (thumbnail) instead of a video. A vertical/portrait preview
+           clip doesn't get cropped to fill its box (.is-portrait,
+           toggled in JS once the video's real dimensions are known) — it
+           keeps its native width at the shared box height, centered,
+           per explicit "no lo escales de ancho" request. -->
+      <span class="index-stills__item">
+        <video id="index-stills-left-video" muted loop playsinline autoplay disablePictureInPicture disableRemotePlayback></video>
+      </span>
+      <span class="index-stills__item">
+        <video id="index-stills-right-video" muted loop playsinline autoplay disablePictureInPicture disableRemotePlayback></video>
+        <img id="index-stills-right-still" class="index-stills__still" src="" alt="" hidden>
+      </span>
+      <div class="index-stills__controls">
+        <!-- Decorative for now, matching the reference's corner icon —
+             no behaviour spec yet (see css/index-sheet.css notes). -->
+        <button class="index-stills__btn" type="button" aria-label="Expand" data-stills-expand>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M9 3H3v6M15 3h6v6M9 21H3v-6M15 21h6v-6"/></svg>
+        </button>
+      </div>
+    </div>
+  </main>
+
+  <!-- Standard inner-page nav — same classes/position as Photography and
+       Film (fixed, vertically centered, right edge) — per explicit
+       "mantener esa coherencia estética" request. Floats in the gap
+       between the top metadata block and the stills below, same idea as
+       Photography's nav floating between its two filmstrips. -->
+  <nav class="site-nav site-nav--light site-nav--corner site-nav--pin-viewport" aria-label="Primary">
+    <a class="site-nav__brand" href="index.html">Andreu Virgil</a>
+    <div class="site-nav__links">
+      <a href="film.html">Cinematography</a>
+      <a href="photography.html">Photography</a>
+      <a href="info.html">About Me</a>
+      <a href="tracklist.html" aria-current="page">Index</a>
+    </div>
+    <button class="site-nav__menu-toggle" type="button" data-menu-open>Menu</button>
+  </nav>
+
+  <!-- ============ Overlay menu (mobile nav + INDEX) ============ -->
+  <div class="overlay-menu" id="overlay-menu" aria-hidden="true">
+    <div class="overlay-menu__top">
+      <a class="label" href="tracklist.html" aria-current="page">Index</a>
+      <button class="overlay-menu__close" type="button" data-menu-close>Close</button>
+    </div>
+    <div class="overlay-menu__body">
+      <div>
+        <div class="overlay-menu__group-title">Work</div>
+        <div class="overlay-menu__links">
+          <a href="film.html">Cinematography</a>
+          <a href="photography.html">Photography</a>
+        </div>
+        <div class="overlay-menu__sub">
+          <a href="photography.html#analog">Analog</a>
+          <a href="photography.html#digital">Digital</a>
+        </div>
+      </div>
+      <div>
+        <div class="overlay-menu__group-title">Studio</div>
+        <div class="overlay-menu__links">
+          <a href="info.html">About Me</a>
+          <a href="index.html">Home</a>
+        </div>
+      </div>
+    </div>
+    <div class="overlay-menu__bottom">
+      <a href="mailto:andreu.urgeles22@gmail.com">andreu.urgeles22@gmail.com</a>
+      <span>Barcelona · Available for international</span>
+    </div>
+  </div>
+
+  <script src="js/nav.js"></script>
+  <script src="js/index-track.js"></script>
+</body>

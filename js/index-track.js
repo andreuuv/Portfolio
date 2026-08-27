@@ -17,7 +17,7 @@
   var rightStill = document.getElementById('index-stills-right-still');
 
   // Hover/focus on a tracklist row fades out the single default video
-  // (.index-stills__default, Home's own reel — see index.html) and
+  // (.index-stills__default, the homepage's own reel — see index.html (the homepage itself)) and
   // reveals a two-box preview stage underneath it: left plays that
   // project's own preview clip, right swaps to a static still
   // (thumbnail) instead of a second video. Leaving fades the default

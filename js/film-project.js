@@ -13,7 +13,7 @@
     { href: 'film.html', label: 'Cinematography' },
     { href: 'photography.html', label: 'Photography' },
     { href: 'info.html', label: 'About Me' },
-    { href: 'index.html', label: 'Index' }
+    { href: 'tracklist.html', label: 'Index' }
   ];
 
   fetch('data/projects.json')
