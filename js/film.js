@@ -4,6 +4,57 @@
   var stageVideo = document.getElementById('film-stage-video');
   if (!list) return;
 
+  // One shared observer: only the list items actually scrolled near the
+  // viewport start fetching/playing their clip. Originally every item's
+  // video loaded eagerly on page load — invisible on localhost (zero real
+  // network latency) but on a real host that's 5 clips (~20MB each)
+  // downloading concurrently the instant the page opens, which is exactly
+  // why they were "tardan mucho en cargar y no se autoreproducen": nothing
+  // is actually broken, the videos just have to fight each other for
+  // bandwidth before any of them buffer enough to start. Loading only
+  // what's near-visible fixes that at the source instead of just
+  // compressing the symptom away.
+  var lazyVideoObserver = 'IntersectionObserver' in window
+    ? new IntersectionObserver(function (entries) {
+        entries.forEach(function (entry) {
+          if (!entry.isIntersecting) return;
+          var video = entry.target;
+          lazyVideoObserver.unobserve(video);
+          startVideo(video);
+        });
+      }, { rootMargin: '200px 0px' })
+    : null;
+
+  function startVideo(video) {
+    if (video.getAttribute('data-started')) return;
+    video.setAttribute('data-started', 'true');
+    video.preload = 'auto';
+    var source = document.createElement('source');
+    source.src = video.getAttribute('data-src');
+    source.type = 'video/mp4';
+    video.appendChild(source);
+    video.load();
+
+    // Same belt-and-braces approach as the home hero video: a single
+    // play() call right after creating the element is too early (nothing
+    // buffered yet, preload="auto" only starts fetching then) and
+    // autoplay support/timing varies enough across browsers that one
+    // attempt isn't reliable. Retry on the events that mean "there's
+    // enough data now" and on first user interaction as a last resort.
+    function tryPlay() {
+      var p = video.play();
+      if (p && p.catch) p.catch(function () { /* still blocked; poster keeps showing */ });
+    }
+    tryPlay();
+    video.addEventListener('loadedmetadata', tryPlay);
+    video.addEventListener('loadeddata', tryPlay);
+    video.addEventListener('canplay', tryPlay);
+    document.addEventListener('visibilitychange', function () {
+      if (!document.hidden && video.paused) tryPlay();
+    });
+    window.addEventListener('pointerdown', tryPlay, { once: true, passive: true });
+  }
+
   // Small looping preview clip per list item (own <video>, not shared —
   // safe to give it a data-fallback-label, unlike the single reused stage
   // video below). Falls back to the static thumbnail image if a project
@@ -16,33 +67,16 @@
       video.defaultMuted = true;
       video.loop = true;
       video.playsInline = true;
-      video.autoplay = true;
-      video.preload = 'auto';
+      video.preload = 'none';
       video.poster = item.thumbnail;
       video.setAttribute('data-fallback-label', item.preview);
-      var source = document.createElement('source');
-      source.src = item.preview;
-      source.type = 'video/mp4';
-      video.appendChild(source);
+      video.setAttribute('data-src', item.preview);
 
-      // Same belt-and-braces approach as the home hero video: a single
-      // play() call right after creating the element is too early (nothing
-      // buffered yet, preload="auto" only starts fetching then) and
-      // autoplay support/timing varies enough across browsers that one
-      // attempt isn't reliable. Retry on the events that mean "there's
-      // enough data now" and on first user interaction as a last resort.
-      function tryPlay() {
-        var p = video.play();
-        if (p && p.catch) p.catch(function () { /* still blocked; poster keeps showing */ });
+      if (lazyVideoObserver) {
+        lazyVideoObserver.observe(video);
+      } else {
+        startVideo(video); // no IntersectionObserver support — fall back to eager load
       }
-      tryPlay();
-      video.addEventListener('loadedmetadata', tryPlay);
-      video.addEventListener('loadeddata', tryPlay);
-      video.addEventListener('canplay', tryPlay);
-      document.addEventListener('visibilitychange', function () {
-        if (!document.hidden && video.paused) tryPlay();
-      });
-      window.addEventListener('pointerdown', tryPlay, { once: true, passive: true });
 
       return video;
     }
