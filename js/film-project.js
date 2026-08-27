@@ -85,7 +85,7 @@
         '<span class="project-top__title">' + project.title + '</span>' +
         '</div>' +
         '<div class="project-top__right">' +
-        '<a class="project-top__email" href="mailto:andreu.urgeles22@gmail.com">andreu.urgeles22@gmail.com</a>' +
+        '<a class="project-top__email" href="mailto:andreu.virgil22@gmail.com">andreu.virgil22@gmail.com</a>' +
         '<nav class="project-top__nav" aria-label="Primary">' + navLinksHtml + '</nav>' +
         '</div>' +
         '</header>' +
