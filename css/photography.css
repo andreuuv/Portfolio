@@ -137,6 +137,22 @@
 
 /* --- individual collection page (photo-collection.html) --- */
 
+/* Nav word-spacing tightened and header text (back link / title / group)
+   left-aligned with the "Andreu Virgil" brand — per explicit "eliminar un
+   poco de el espacio entre las palabras...alinearlo con andreu virgil"
+   request, scoped to this page only via the body class (the shared
+   .site-nav__links letter-spacing stays as-is everywhere else). */
+.collection-page-body .site-nav__links a,
+.collection-page-body .site-nav__links button {
+  letter-spacing: 0.08em;
+}
+
+.project-header {
+  padding-left: var(--edge); /* same inset as .site-nav's padding and
+    .collection-grid's margin below — lines "Back to Photography" / the
+    title / the group label up with "Andreu Virgil" above them. */
+}
+
 .collection-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
