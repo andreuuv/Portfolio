@@ -60,11 +60,6 @@
   // little while after you stop.
   function setupInteraction(row) {
     var strip = row.strip;
-    var DRAG_THRESHOLD = 6;
-    var dragging = false;
-    var moved = false;
-    var startX = 0;
-    var startScroll = 0;
 
     function pause(temporary) {
       row.auto = false;
@@ -74,42 +69,14 @@
       }
     }
 
-    // Mouse only — touch already gets smooth native drag-to-scroll for
-    // free from the browser since the strip is a real horizontal scroll
-    // container now; adding our own pointer logic on top of that would
-    // just fight it.
-    strip.addEventListener('pointerdown', function (e) {
-      if (e.pointerType !== 'mouse' || e.button !== 0) return;
-      dragging = true;
-      moved = false;
-      startX = e.clientX;
-      startScroll = strip.scrollLeft;
-      pause(false);
-      try { strip.setPointerCapture(e.pointerId); } catch (err) { /* Safari fallback: keep going without capture */ }
-    });
-    strip.addEventListener('pointermove', function (e) {
-      if (!dragging) return;
-      var dx = e.clientX - startX;
-      if (Math.abs(dx) > DRAG_THRESHOLD) {
-        moved = true;
-        strip.classList.add('is-dragging');
-      }
-      strip.scrollLeft = startScroll - dx;
-    });
-    function stopDrag() {
-      if (!dragging) return;
-      dragging = false;
-      strip.classList.remove('is-dragging');
-      pause(true);
-    }
-    strip.addEventListener('pointerup', stopDrag);
-    strip.addEventListener('pointercancel', stopDrag);
-
-    // A real drag shouldn't also fire the card's link — only swallow the
-    // click if the pointer actually moved past the threshold.
-    strip.addEventListener('click', function (e) {
-      if (moved) { e.preventDefault(); moved = false; }
-    }, true);
+    // Removed the custom mouse-drag-to-scroll handling (pointerdown/move/up
+    // + setPointerCapture + a capturing click-guard) — it was interfering
+    // with plain clicks on a card actually opening the collection, per
+    // explicit "quitar la de deslizar con la mano" follow-up once removing
+    // the hover-grow animation alone didn't fix it. Touch users still get
+    // native drag-to-scroll for free (real horizontal scroll container);
+    // desktop mouse users get the auto-scroll marquee + the wheel redirect
+    // below instead of a manual drag.
 
     // A plain vertical mouse wheel doesn't scroll a horizontal container by
     // default — redirect it. Trackpad horizontal swipes already arrive as

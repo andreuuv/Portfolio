@@ -52,7 +52,6 @@
   overflow-y: hidden;
   -webkit-overflow-scrolling: touch;
   scrollbar-width: none; /* Firefox */
-  cursor: grab;
   padding: 0 var(--edge) 0.5rem;
   /* Shared with the card-width formula below so exactly this many gaps
      get subtracted from the viewport width — keep the two in sync. */
@@ -70,7 +69,6 @@
   --card-w: calc(((100vw - (2 * var(--edge)) - ((var(--strip-visible) - 1) * var(--strip-gap))) / var(--strip-visible)) + 60px);
 }
 .photo-strip::-webkit-scrollbar { display: none; } /* Chrome/Safari — scroll still works, just no visible bar */
-.photo-strip.is-dragging { cursor: grabbing; }
 .photo-strip__track {
   display: flex;
   width: max-content;
