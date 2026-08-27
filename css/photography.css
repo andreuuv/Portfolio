@@ -68,8 +68,6 @@
      fit" request — trimmed down twice since (+70px, then +60px) per
      follow-up "smaller" requests. */
   --card-w: calc(((100vw - (2 * var(--edge)) - ((var(--strip-visible) - 1) * var(--strip-gap))) / var(--strip-visible)) + 60px);
-  /* How much bigger a hovered card gets (1.08 = +8%). */
-  --card-grow: 1.08;
 }
 .photo-strip::-webkit-scrollbar { display: none; } /* Chrome/Safari — scroll still works, just no visible bar */
 .photo-strip.is-dragging { cursor: grabbing; }
@@ -86,26 +84,16 @@
 .photo-strip__item {
   flex: 0 0 auto;
   display: block;
-  position: relative; /* so the hovered card can lift above its neighbors */
-  transition: transform 0.4s var(--ease);
+  position: relative;
   -webkit-user-drag: none; /* don't fight our own drag-to-scroll with the browser's native link-drag ghost */
   user-select: none;
 }
-.photo-strip__item:hover {
-  z-index: 2; /* grown card would otherwise paint under the next one in the row */
-}
-/* Growing a card by --card-grow overflows (--card-grow - 1) / 2 of its own
-   width on each side (transform-origin: center splits the growth evenly).
-   Slide every card after it right by that same amount, and every card
-   before it left, so a gap opens up instead of the grown card overlapping
-   its neighbors. Same sibling-push technique as the home page's big menu
-   hover, just horizontal instead of vertical. */
-.photo-strip__item:hover ~ .photo-strip__item {
-  transform: translateX(calc(var(--card-w) * (var(--card-grow) - 1) / 2));
-}
-.photo-strip__item:has(~ .photo-strip__item:hover) {
-  transform: translateX(calc(var(--card-w) * (var(--card-grow) - 1) / -2));
-}
+/* Cards used to grow under the cursor (see git history), but the strip
+   keeps auto-scrolling while you hover — not just while dragging — so the
+   card was both sliding sideways AND changing size right as you tried to
+   click it, and neighbouring cards kept swapping hover state as they drifted
+   under a still cursor. Removed per explicit "quitar la animacion...no me
+   deja entrar" request; hovering no longer changes size/position at all. */
 
 /* Card width is derived so exactly --strip-visible cards fill the viewport
    width at a time (viewport minus the two outer edges minus the gaps
@@ -127,13 +115,6 @@
   width: var(--card-w);
   overflow: hidden;
   background: #ececec;
-  transform-origin: center;
-  transition: transform 0.4s var(--ease);
-}
-/* The whole card grows a little under the cursor (was just an inner-image
-   zoom clipped inside a fixed box before — now the box itself scales up). */
-.photo-strip__item:hover .photo-strip__cover {
-  transform: scale(var(--card-grow));
 }
 .photo-strip__cover img {
   width: 100%;
