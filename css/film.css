@@ -133,67 +133,102 @@
   opacity: 1;
 }
 
-.film-grid {
+/* In Grid view the nav becomes a conventional top bar (name left, links
+   right) instead of floating vertically centered mid-page — per explicit
+   "pon el menu en la parte de arriba y el nombre a la izq" request.
+   .site-nav__brand already has margin-right:auto, so it sits at the far
+   left on its own; only the vertical position needs to change. */
+body.is-grid-view .site-nav.site-nav--corner {
+  top: var(--edge);
+  transform: none;
+}
+
+body.is-grid-view .film-list-wrap,
+body.is-grid-view .film-stage,
+body.is-grid-view .film-meta {
+  display: none;
+}
+body.is-grid-view .film-grid-wrap {
+  display: block;
+}
+
+.film-grid-wrap {
   display: none;
   position: fixed;
   inset: 0;
   z-index: 25;
   background: var(--bg);
   overflow-y: auto;
-  grid-template-columns: repeat(4, 1fr);
-  /* Grid's default align-content stretches "auto" row tracks to fill the
-     container's full (fixed, viewport-height) block size when there are
-     fewer rows than that height needs — leaving a big empty gap after
-     each square item instead of packing them tight. "start" keeps every
-     row exactly as tall as its own aspect-ratio-square content. */
-  align-content: start;
-  gap: 2px;
-  padding-top: clamp(3.5rem, 8vh, 5rem); /* clears the fixed nav up top */
+  padding-top: clamp(3.5rem, 8vh, 5rem); /* clears the top nav */
 }
-body.is-grid-view .film-list-wrap,
-body.is-grid-view .film-stage,
-body.is-grid-view .film-meta {
-  display: none;
+
+/* Category filter bar — built from each visible project's own `category`
+   field plus "All", per the reference's ALL/FILM/MUSIC VIDEO/ANIMATION
+   tabs. Clicking one shows/hides grid items via js/film.js. */
+.film-grid-filters {
+  display: flex;
+  gap: 1.25rem;
+  padding: 0 var(--edge) 1.25rem;
+  font-family: var(--font-geist);
+  font-size: 0.7rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
 }
-body.is-grid-view .film-grid {
+.film-grid-filters__btn {
+  color: var(--fg);
+  opacity: 0.4;
+  transition: opacity var(--dur) var(--ease);
+}
+.film-grid-filters__btn.is-active,
+.film-grid-filters__btn:hover {
+  opacity: 1;
+}
+
+.film-grid {
   display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  align-content: start;
+  gap: 2px 1.25rem;
+  padding: 0 var(--edge) var(--edge);
 }
 .film-grid__item {
-  position: relative;
   display: block;
-  aspect-ratio: 1 / 1;
+}
+.film-grid__item.is-hidden { display: none; }
+.film-grid__cover {
+  display: block;
+  aspect-ratio: 16 / 9;
   overflow: hidden;
   background: #ececec;
 }
-.film-grid__item img,
-.film-grid__item video {
+.film-grid__cover img {
   width: 100%;
   height: 100%;
   object-fit: cover;
   transition: transform 0.5s var(--ease);
 }
-.film-grid__item:hover img,
-.film-grid__item:hover video,
-.film-grid__item:focus-visible img,
-.film-grid__item:focus-visible video {
+.film-grid__item:hover .film-grid__cover img,
+.film-grid__item:focus-visible .film-grid__cover img {
   transform: scale(1.04);
 }
+/* Caption sits below the image (not overlaid) — title/client on the
+   left, category on the right, matching the reference's row layout. */
 .film-grid__caption {
-  position: absolute;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  padding: 0.5rem 0.7rem;
+  display: flex;
+  justify-content: space-between;
+  gap: 0.75rem;
+  padding-top: 0.5rem;
   font-family: var(--font-geist);
-  font-size: 0.66rem;
-  letter-spacing: 0.04em;
+  font-size: 0.7rem;
+  letter-spacing: 0.03em;
   text-transform: uppercase;
-  color: #fff;
-  background: linear-gradient(to top, rgba(0, 0, 0, 0.6), transparent);
+  color: var(--fg);
 }
+.film-grid__category { color: var(--fg-soft); white-space: nowrap; }
 
 @media (max-width: 720px) {
   .film-grid { grid-template-columns: repeat(2, 1fr); }
+  .film-grid-filters { flex-wrap: wrap; gap: 0.75rem 1rem; }
 }
 
 /* --- individual project page — rebuilt to match a reference layout

@@ -41,11 +41,15 @@
     <p><span class="film-meta__label">Role</span> <span id="film-meta-role">—</span></p>
   </div>
 
-  <!-- Grid view — every project as a square thumbnail, alternative to the
-       Slider (list + hover stage) above. Per explicit "podrias hacer el
-       mismo layout" request referencing a site with this exact Slider/
-       Grid toggle. -->
-  <div class="film-grid" id="film-grid" hidden></div>
+  <!-- Grid view — every project as a landscape thumbnail with a category
+       filter bar above it, alternative to the Slider (list + hover
+       stage) above. Per explicit "podrias hacer el mismo layout" /
+       "en grid ahora vamos hacerla asi" requests referencing a site with
+       this exact Slider/Grid toggle + category-filtered grid. -->
+  <div class="film-grid-wrap" id="film-grid-wrap" hidden>
+    <div class="film-grid-filters" id="film-grid-filters" role="tablist" aria-label="Filter by category"></div>
+    <div class="film-grid" id="film-grid"></div>
+  </div>
 
   <div class="film-view-toggle" role="tablist" aria-label="View">
     <button type="button" class="film-view-toggle__btn is-active" data-view="slider" role="tab" aria-selected="true">Slider</button>

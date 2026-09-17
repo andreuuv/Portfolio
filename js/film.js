@@ -74,14 +74,59 @@
   }
 
   var grid = document.getElementById('film-grid');
+  var gridFilters = document.getElementById('film-grid-filters');
+
+  // Landscape thumbnail with the caption BELOW it (title/client left,
+  // category right) instead of overlaid on the image — matches the
+  // reference's grid row layout.
   function gridCard(item) {
     var a = document.createElement('a');
     a.className = 'film-grid__item';
+    a.setAttribute('data-category', item.category || '');
     a.href = 'film-project.html?id=' + encodeURIComponent(item.id);
+    var titleLine = item.client ? (item.title + ' - ' + item.client) : item.title;
     a.innerHTML =
+      '<span class="film-grid__cover">' +
       '<img src="' + item.thumbnail + '" alt="' + item.title + '" loading="lazy" data-fallback-label="' + item.thumbnail + '">' +
-      '<span class="film-grid__caption">' + item.title + '</span>';
+      '</span>' +
+      '<span class="film-grid__caption">' +
+      '<span class="film-grid__title">' + titleLine + '</span>' +
+      '<span class="film-grid__category">' + (item.category || '') + '</span>' +
+      '</span>';
     return a;
+  }
+
+  // Category filter bar — "All" plus each distinct category among the
+  // visible projects, in first-seen order. Clicking one hides every grid
+  // item whose own category doesn't match.
+  function buildFilters(visible) {
+    if (!gridFilters) return;
+    var categories = [];
+    visible.forEach(function (p) {
+      if (p.category && categories.indexOf(p.category) === -1) categories.push(p.category);
+    });
+    var all = ['All'].concat(categories);
+    gridFilters.innerHTML = all.map(function (cat, i) {
+      return '<button type="button" class="film-grid-filters__btn' + (i === 0 ? ' is-active' : '') +
+        '" data-category="' + (cat === 'All' ? '' : cat) + '" role="tab" aria-selected="' + (i === 0 ? 'true' : 'false') + '">' +
+        cat + '</button>';
+    }).join('');
+
+    var filterButtons = gridFilters.querySelectorAll('.film-grid-filters__btn');
+    filterButtons.forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        var category = btn.getAttribute('data-category');
+        filterButtons.forEach(function (b) {
+          var active = b === btn;
+          b.classList.toggle('is-active', active);
+          b.setAttribute('aria-selected', active ? 'true' : 'false');
+        });
+        Array.from(grid.children).forEach(function (item) {
+          var matches = !category || item.getAttribute('data-category') === category;
+          item.classList.toggle('is-hidden', !matches);
+        });
+      });
+    });
   }
 
   fetch('data/projects.json')
@@ -97,7 +142,10 @@
       // the Grid view, so both stay in sync.
       var visible = projects.filter(function (p) { return !p.hideFromFilmList; });
       visible.forEach(function (p, i) { list.appendChild(card(p, i)); });
-      if (grid) visible.forEach(function (p) { grid.appendChild(gridCard(p)); });
+      if (grid) {
+        visible.forEach(function (p) { grid.appendChild(gridCard(p)); });
+        buildFilters(visible);
+      }
 
       rows = Array.from(list.children);
       defaultProject = visible[0];
