@@ -2,134 +2,56 @@
   var list = document.getElementById('film-list');
   var stage = document.getElementById('film-stage');
   var stageVideo = document.getElementById('film-stage-video');
+  var metaDirector = document.getElementById('film-meta-director');
+  var metaRole = document.getElementById('film-meta-role');
   if (!list) return;
 
-  // One shared observer: only the list items actually scrolled near the
-  // viewport start fetching/playing their clip. Originally every item's
-  // video loaded eagerly on page load — invisible on localhost (zero real
-  // network latency) but on a real host that's 5 clips (~20MB each)
-  // downloading concurrently the instant the page opens, which is exactly
-  // why they were "tardan mucho en cargar y no se autoreproducen": nothing
-  // is actually broken, the videos just have to fight each other for
-  // bandwidth before any of them buffer enough to start. Loading only
-  // what's near-visible fixes that at the source instead of just
-  // compressing the symptom away.
-  var lazyVideoObserver = 'IntersectionObserver' in window
-    ? new IntersectionObserver(function (entries) {
-        entries.forEach(function (entry) {
-          if (!entry.isIntersecting) return;
-          var video = entry.target;
-          lazyVideoObserver.unobserve(video);
-          startVideo(video);
-        });
-      }, { rootMargin: '200px 0px' })
-    : null;
+  // The stage is a single reused <video> — only ever one clip loading/
+  // playing at a time, swapped by src, so (unlike the old per-row-video
+  // list) there's no concurrent-download problem to guard against here.
+  var defaultProject = null;
 
-  function startVideo(video) {
-    if (video.getAttribute('data-started')) return;
-    video.setAttribute('data-started', 'true');
-    video.preload = 'auto';
-    var source = document.createElement('source');
-    source.src = video.getAttribute('data-src');
-    source.type = 'video/mp4';
-    video.appendChild(source);
-    video.load();
-
-    // Same belt-and-braces approach as the home hero video: a single
-    // play() call right after creating the element is too early (nothing
-    // buffered yet, preload="auto" only starts fetching then) and
-    // autoplay support/timing varies enough across browsers that one
-    // attempt isn't reliable. Retry on the events that mean "there's
-    // enough data now" and on first user interaction as a last resort.
-    function tryPlay() {
-      var p = video.play();
-      if (p && p.catch) p.catch(function () { /* still blocked; poster keeps showing */ });
-    }
-    tryPlay();
-    video.addEventListener('loadedmetadata', tryPlay);
-    video.addEventListener('loadeddata', tryPlay);
-    video.addEventListener('canplay', tryPlay);
-    document.addEventListener('visibilitychange', function () {
-      if (!document.hidden && video.paused) tryPlay();
-    });
-    window.addEventListener('pointerdown', tryPlay, { once: true, passive: true });
-  }
-
-  // Small looping preview clip per list item (own <video>, not shared —
-  // safe to give it a data-fallback-label, unlike the single reused stage
-  // video below). Falls back to the static thumbnail image if a project
-  // has no preview clip yet.
-  function itemMedia(item) {
-    if (item.preview) {
-      var video = document.createElement('video');
-      video.className = 'film-list__video';
-      video.muted = true;
-      video.defaultMuted = true;
-      video.loop = true;
-      video.playsInline = true;
-      video.preload = 'none';
-      video.poster = item.thumbnail;
-      video.setAttribute('data-fallback-label', item.preview);
-      video.setAttribute('data-src', item.preview);
-
-      if (lazyVideoObserver) {
-        lazyVideoObserver.observe(video);
-      } else {
-        startVideo(video); // no IntersectionObserver support — fall back to eager load
-      }
-
-      return video;
-    }
-    var img = document.createElement('img');
-    img.className = 'film-list__image';
-    img.loading = 'lazy';
-    img.alt = item.title;
-    img.src = item.thumbnail;
-    img.setAttribute('data-fallback-label', item.thumbnail);
-    return img;
-  }
-
-  function card(item) {
-    var a = document.createElement('a');
-    a.className = 'film-list__item';
-    a.href = 'film-project.html?id=' + encodeURIComponent(item.id);
-
-    var videoWrap = document.createElement('span');
-    videoWrap.className = 'film-list__video-wrap';
-    videoWrap.appendChild(itemMedia(item));
-
-    var caption = document.createElement('span');
-    caption.className = 'film-list__caption';
-    caption.textContent = item.title;
-
-    a.appendChild(videoWrap);
-    a.appendChild(caption);
-
-    // Hover (mouse) or focus (keyboard) plays the same clip large in the
-    // stage behind the nav. Leaving clears it back to empty.
-    function activate() {
-      if (!stage || !stageVideo || !item.preview) return;
-      // No data-fallback-label here on purpose: the stage is a single
-      // reused <video>, and media-placeholder.js would delete it from the
-      // DOM on the first missing source, breaking every hover after that.
-      // A silent black stage is the right fallback until real clips exist.
+  function activate(item) {
+    if (!item) return;
+    if (stageVideo && item.preview) {
       if (stageVideo.getAttribute('src') !== item.preview) {
         stageVideo.setAttribute('src', item.preview);
         stageVideo.load();
       }
       var p = stageVideo.play();
-      if (p && p.catch) p.catch(function () {});
-      stage.classList.add('is-active');
+      if (p && p.catch) p.catch(function () { /* still blocked; dimmed stage stays as-is */ });
     }
-    function deactivate() {
-      if (!stage) return;
-      stage.classList.remove('is-active');
-    }
+    if (stage) stage.classList.add('is-ready');
+    if (metaDirector) metaDirector.textContent = item.director || '—';
+    if (metaRole) metaRole.textContent = item.role || '—';
+  }
 
-    a.addEventListener('mouseenter', activate);
-    a.addEventListener('mouseleave', deactivate);
-    a.addEventListener('focus', activate);
-    a.addEventListener('blur', deactivate);
+  // Plain-text row: TITLE | CLIENT on one line, year below, matching the
+  // reference ("la quiero asi la de slider"). No per-row thumbnail — the
+  // full-bleed stage behind everything takes that job instead. First row
+  // is the resting "active" one (its clip is what the stage shows before
+  // anything's been hovered); hovering/focusing any row shows that one
+  // instead, and leaving reverts back to the first.
+  function card(item, isFirst) {
+    var a = document.createElement('a');
+    a.className = 'film-list__item' + (isFirst ? ' is-active' : '');
+    a.href = 'film-project.html?id=' + encodeURIComponent(item.id);
+
+    var caption = document.createElement('span');
+    caption.className = 'film-list__caption';
+    caption.textContent = item.client ? (item.title + ' | ' + item.client) : item.title;
+
+    var year = document.createElement('span');
+    year.className = 'film-list__year';
+    year.textContent = item.year || '';
+
+    a.appendChild(caption);
+    a.appendChild(year);
+
+    a.addEventListener('mouseenter', function () { activate(item); });
+    a.addEventListener('focus', function () { activate(item); });
+    a.addEventListener('mouseleave', function () { activate(defaultProject); });
+    a.addEventListener('blur', function () { activate(defaultProject); });
 
     return a;
   }
@@ -157,8 +79,11 @@
       // still uses the full list including these two. Same filter for
       // the Grid view, so both stay in sync.
       var visible = projects.filter(function (p) { return !p.hideFromFilmList; });
-      visible.forEach(function (p) { list.appendChild(card(p)); });
+      visible.forEach(function (p, i) { list.appendChild(card(p, i === 0)); });
       if (grid) visible.forEach(function (p) { grid.appendChild(gridCard(p)); });
+
+      defaultProject = visible[0];
+      activate(defaultProject);
     })
     .catch(function (err) {
       console.error('Could not load data/projects.json', err);
@@ -177,7 +102,6 @@
         b.classList.toggle('is-active', active);
         b.setAttribute('aria-selected', active ? 'true' : 'false');
       });
-      if (isGrid && stage) stage.classList.remove('is-active');
     });
   });
 })();

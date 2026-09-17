@@ -1,76 +1,22 @@
-/* Film — scrolling list on the left, each item a small looping preview
-   clip; a fixed "stage" fills the rest of the screen (behind the nav) and
-   plays that same clip large on hover/focus. Click goes to the project. */
+/* Film — full-bleed background stage (always shows the "active" project's
+   preview clip: first one at rest, whichever row is hovered/focused
+   otherwise) with a plain-text project list overlaid directly on top —
+   no separate boxed column, no per-row thumbnail. Matches a reference
+   Andreu sent ("la quiero asi la de slider"). Click goes to the project. */
 
 .film-page-body {
   overflow-x: hidden;
+  background: #000;
 }
 
-.film-list-wrap {
-  position: relative;
-  z-index: 30; /* above the stage, below the nav (40) */
-  width: clamp(280px, 38vw, 560px);
-  min-height: 100vh;
-  background: var(--bg);
-  border-right: 1px solid var(--line);
-}
-
-.film-list {
-  display: flex;
-  flex-direction: column;
-  margin-top: var(--edge);
-  border-top: 1px solid var(--line);
-}
-
-.film-list__item {
-  display: block;
-  border-bottom: 1px solid var(--line);
-}
-.film-list__video-wrap {
-  display: block;
-  margin: 0 5px; /* 10px narrower total — a little bleed on each side
-                    instead of running edge-to-edge with the list column */
-  aspect-ratio: 16 / 9;
-  background: #111;
-  overflow: hidden;
-}
-.film-list__image,
-.film-list__video,
-.film-list__video-wrap .media-placeholder {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  transition: transform 0.6s var(--ease);
-}
-.film-list__item:hover .film-list__image,
-.film-list__item:hover .film-list__video {
-  transform: scale(1.035);
-}
-
-.film-list__caption {
-  display: block;
-  padding: 0.75rem var(--edge) 1rem;
-  font-size: 0.68rem;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-  color: var(--fg);
-  transition: color var(--dur) var(--ease);
-}
-.film-list__item:hover .film-list__caption,
-.film-list__item:focus-visible .film-list__caption {
-  color: #1440d6;
-}
-
-/* Fixed stage filling everything right of the list — empty/white until a
-   list item is hovered or focused. */
+/* Fixed, fills the whole viewport, sits behind everything else (list,
+   meta, nav). Always shows a clip — never empty — so there's always a
+   photo/video behind the text, same as the reference. */
 .film-stage {
   position: fixed;
-  top: 0;
-  right: 0;
-  bottom: 0;
-  left: clamp(280px, 38vw, 560px);
-  z-index: 20;
-  background: var(--bg);
+  inset: 0;
+  z-index: 10;
+  background: #000;
   overflow: hidden;
 }
 .film-stage video {
@@ -79,35 +25,101 @@
   width: 100%;
   height: 100%;
   object-fit: cover;
-  opacity: 0;
-  transition: opacity 0.5s var(--ease);
-}
-.film-stage.is-active video {
-  opacity: 1;
+  opacity: 0.55; /* dimmed so the white text stays readable over any frame */
 }
 
+.film-list-wrap {
+  position: relative;
+  z-index: 30; /* above the stage, below the nav (40) */
+  width: clamp(280px, 34vw, 480px);
+  min-height: 100vh;
+  padding-top: var(--edge);
+}
+
+.film-list {
+  display: flex;
+  flex-direction: column;
+}
+
+.film-list__item {
+  display: block;
+  padding: 0.85rem var(--edge);
+  opacity: 0.4;
+  transition: opacity var(--dur) var(--ease);
+}
+/* First item is the resting "active" one (its clip is what the stage
+   shows before anything's been hovered) — same bold-one/dim-rest pattern
+   as the Index tracklist. */
+.film-list__item.is-active { opacity: 1; }
+.film-list__item:hover,
+.film-list__item:focus-visible {
+  opacity: 1;
+}
+.film-list:hover .film-list__item:not(:hover),
+.film-list:focus-within .film-list__item:not(:focus-visible) {
+  opacity: 0.4;
+}
+
+.film-list__caption {
+  display: block;
+  font-size: 0.78rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: #fff;
+}
+.film-list__year {
+  display: block;
+  margin-top: 0.2rem;
+  font-size: 0.68rem;
+  letter-spacing: 0.04em;
+  color: rgba(255, 255, 255, 0.7);
+}
+
+/* Director/Role of whichever project is currently active on the stage —
+   same corner position as the reference's Director/Production block. */
+.film-meta {
+  position: fixed;
+  z-index: 30;
+  right: var(--edge);
+  bottom: var(--edge);
+  text-align: right;
+  font-family: var(--font-geist);
+  font-size: 0.7rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.7);
+}
+.film-meta p { margin: 0 0 0.2rem; }
+.film-meta__label { color: rgba(255, 255, 255, 0.5); margin-right: 0.4em; }
+.film-meta span[id] { color: #fff; }
+
 @media (max-width: 900px) {
-  .film-stage { display: none; }
-  .film-list-wrap { width: 100%; border-right: none; }
+  .film-list-wrap { width: 100%; }
+  .film-meta { display: none; }
 }
 
 /* ---------- Slider/Grid view switch ---------- */
 
 .film-view-toggle {
   position: fixed;
-  left: var(--edge);
+  left: 50%;
   bottom: var(--edge);
-  z-index: 35; /* above the list (30) and stage (20), below the nav (40) */
+  transform: translateX(-50%);
+  z-index: 35; /* above the list/meta (30) and stage (10), below the nav (40) */
   display: flex;
   gap: 1rem;
+  padding: 0.4rem 0.9rem;
+  border-radius: 999px;
+  background: rgba(0, 0, 0, 0.55); /* readable over both the dark stage
+    (Slider) and the white background (Grid) — same chip either way */
   font-family: var(--font-geist);
   font-size: 0.7rem;
   letter-spacing: 0.08em;
   text-transform: uppercase;
 }
 .film-view-toggle__btn {
-  color: var(--fg);
-  opacity: 0.4;
+  color: #fff;
+  opacity: 0.5;
   transition: opacity var(--dur) var(--ease);
 }
 .film-view-toggle__btn.is-active,
@@ -133,7 +145,8 @@
   padding-top: clamp(3.5rem, 8vh, 5rem); /* clears the fixed nav up top */
 }
 body.is-grid-view .film-list-wrap,
-body.is-grid-view .film-stage {
+body.is-grid-view .film-stage,
+body.is-grid-view .film-meta {
   display: none;
 }
 body.is-grid-view .film-grid {

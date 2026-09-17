@@ -20,14 +20,25 @@
     <button class="site-nav__menu-toggle" type="button" data-menu-open>Menu</button>
   </nav>
 
-  <!-- Big preview stage: fills the area right of the list, behind the nav.
-       js/film.js swaps its video source on hover/focus of a list item. -->
+  <!-- Full-bleed background stage — always shows a project's preview clip
+       (the "active" one: first project at rest, whichever row is
+       hovered/focused otherwise), with the list overlaid directly on top
+       instead of sitting in its own separate boxed column. Per reference
+       ("la quiero asi la de slider"). -->
   <div class="film-stage" id="film-stage" aria-hidden="true">
-    <video id="film-stage-video" muted loop playsinline preload="none"></video>
+    <video id="film-stage-video" muted loop playsinline autoplay preload="none"></video>
   </div>
 
   <div class="film-list-wrap">
     <div id="film-list" class="film-list"></div>
+  </div>
+
+  <!-- Director/Role of whichever project is currently active on the stage
+       — same data already used elsewhere (data/projects.json), just
+       surfaced here to match the reference's corner credit block. -->
+  <div class="film-meta" id="film-meta">
+    <p><span class="film-meta__label">Director</span> <span id="film-meta-director">—</span></p>
+    <p><span class="film-meta__label">Role</span> <span id="film-meta-role">—</span></p>
   </div>
 
   <!-- Grid view — every project as a square thumbnail, alternative to the
