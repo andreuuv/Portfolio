@@ -135,12 +135,18 @@
 
 /* In Grid view the nav becomes a conventional top bar (name left, links
    right) instead of floating vertically centered mid-page — per explicit
-   "pon el menu en la parte de arriba y el nombre a la izq" request.
-   .site-nav__brand already has margin-right:auto, so it sits at the far
-   left on its own; only the vertical position needs to change. */
+   "pon el menu en la parte de arriba y el nombre a la izq" request. The
+   Slider view deliberately groups the brand in with the links instead of
+   pinning it far left (site-nav__brand--grouped zeroes its auto margin,
+   see css/style.css) — undo that here so the name actually sits at the
+   left edge instead of just next to the links. */
 body.is-grid-view .site-nav.site-nav--corner {
   top: var(--edge);
   transform: none;
+  justify-content: space-between;
+}
+body.is-grid-view .site-nav__brand--grouped {
+  margin-right: auto;
 }
 
 body.is-grid-view .film-list-wrap,
