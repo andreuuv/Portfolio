@@ -1,6 +1,5 @@
 (function () {
   var list = document.getElementById('film-list');
-  var listWrap = document.querySelector('.film-list-wrap');
   var stage = document.getElementById('film-stage');
   var stageVideo = document.getElementById('film-stage-video');
   var metaDirector = document.getElementById('film-meta-director');
@@ -26,20 +25,8 @@
       row.style.opacity = Math.max(1 - ad * 0.3, 0.18);
       row.style.transform = 'rotateX(' + (d * -13) + 'deg) scale(' + (1 - ad * 0.06) + ')';
     });
-
-    // Recenter the whole list (not just the active row) so the active
-    // title always lands at the vertical center of the viewport, still
-    // left-aligned — per explicit "recolocar toda la pagina para que
-    // este en el centro ese titulo alineado todo a la izquierda" request.
-    var activeRow = rows[activeIndex];
-    if (activeRow && list && listWrap) {
-      var rowCenter = activeRow.offsetTop + activeRow.offsetHeight / 2;
-      var viewportCenter = listWrap.clientHeight / 2;
-      list.style.transform = 'translateY(' + (viewportCenter - rowCenter) + 'px)';
-    }
   }
 
-  var lastActiveIndex = 0;
   function activate(item, index) {
     if (!item) return;
     if (stageVideo && item.preview) {
@@ -53,7 +40,7 @@
     if (stage) stage.classList.add('is-ready');
     if (metaDirector) metaDirector.textContent = item.director || '—';
     if (metaRole) metaRole.textContent = item.role || '—';
-    if (typeof index === 'number') { lastActiveIndex = index; arrange(index); }
+    if (typeof index === 'number') arrange(index);
   }
 
   // Plain-text row: TITLE | CLIENT on one line, year below, matching the
@@ -115,10 +102,6 @@
       rows = Array.from(list.children);
       defaultProject = visible[0];
       activate(defaultProject, 0);
-
-      // Keep the active title centered if the viewport height changes
-      // (resize, orientation change) instead of drifting off-center.
-      window.addEventListener('resize', function () { arrange(lastActiveIndex); });
     })
     .catch(function (err) {
       console.error('Could not load data/projects.json', err);

@@ -28,10 +28,10 @@
   opacity: 0.75; /* was 0.55 — "que se vea un poco mas" */
 }
 
-/* Fixed to the full viewport height (not just "flow from the top") so
-   js/film.js can measure a stable center to recenter the active title
-   against — same idea as .film-stage. Left-aligned, only wide enough for
-   the text column. */
+/* Fixed to the full viewport, list kept vertically centered as one
+   static block (left-aligned) — the earlier per-hover recentering
+   animation was tried and explicitly reverted ("quita la animacion de
+   recentrar los textos, dejalos en el medio"). */
 .film-list-wrap {
   position: fixed;
   top: 0;
@@ -40,6 +40,8 @@
   z-index: 30; /* above the stage, below the nav (40) */
   width: clamp(280px, 34vw, 480px);
   overflow: hidden;
+  display: flex;
+  align-items: center;
 }
 
 .film-list {
@@ -49,11 +51,6 @@
      look like a flat vertical squash instead of items curving away like
      they're mounted on a drum. */
   perspective: 900px;
-  /* Repositions (translateY, set by js/film.js's arrange()) so whichever
-     title is active always lands vertically centered in the viewport —
-     per explicit "el titulo...tiene que estar en el centro...recolocar
-     toda la pagina" request — while staying left-aligned throughout. */
-  transition: transform 0.5s var(--ease);
 }
 
 /* Mini 3D-carousel effect: whichever project is active sits at full
