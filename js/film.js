@@ -134,20 +134,50 @@
     return a;
   }
 
+  var grid = document.getElementById('film-grid');
+  function gridCard(item) {
+    var a = document.createElement('a');
+    a.className = 'film-grid__item';
+    a.href = 'film-project.html?id=' + encodeURIComponent(item.id);
+    a.innerHTML =
+      '<img src="' + item.thumbnail + '" alt="' + item.title + '" loading="lazy" data-fallback-label="' + item.thumbnail + '">' +
+      '<span class="film-grid__caption">' + item.title + '</span>';
+    return a;
+  }
+
   fetch('data/projects.json')
     .then(function (r) { return r.json(); })
     .then(function (projects) {
       list.innerHTML = '';
+      if (grid) grid.innerHTML = '';
       // Per explicit request: the Brandays colorist-only capsules stay
       // out of this list (they're still real projects, just not shown
       // here) — data/projects.json marks them hideFromFilmList:true
       // rather than removing them outright, since the Index tracklist
-      // still uses the full list including these two.
-      projects
-        .filter(function (p) { return !p.hideFromFilmList; })
-        .forEach(function (p) { list.appendChild(card(p)); });
+      // still uses the full list including these two. Same filter for
+      // the Grid view, so both stay in sync.
+      var visible = projects.filter(function (p) { return !p.hideFromFilmList; });
+      visible.forEach(function (p) { list.appendChild(card(p)); });
+      if (grid) visible.forEach(function (p) { grid.appendChild(gridCard(p)); });
     })
     .catch(function (err) {
       console.error('Could not load data/projects.json', err);
     });
+
+  // Slider/Grid toggle — swaps .is-grid-view on <body> (see css/film.css
+  // for what that hides/shows). Per explicit "podrias hacer el mismo
+  // layout" request referencing a reference site with this exact toggle.
+  var viewButtons = document.querySelectorAll('.film-view-toggle__btn');
+  viewButtons.forEach(function (btn) {
+    btn.addEventListener('click', function () {
+      var isGrid = btn.getAttribute('data-view') === 'grid';
+      document.body.classList.toggle('is-grid-view', isGrid);
+      viewButtons.forEach(function (b) {
+        var active = b === btn;
+        b.classList.toggle('is-active', active);
+        b.setAttribute('aria-selected', active ? 'true' : 'false');
+      });
+      if (isGrid && stage) stage.classList.remove('is-active');
+    });
+  });
 })();

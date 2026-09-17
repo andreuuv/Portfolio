@@ -30,6 +30,17 @@
     <div id="film-list" class="film-list"></div>
   </div>
 
+  <!-- Grid view — every project as a square thumbnail, alternative to the
+       Slider (list + hover stage) above. Per explicit "podrias hacer el
+       mismo layout" request referencing a site with this exact Slider/
+       Grid toggle. -->
+  <div class="film-grid" id="film-grid" hidden></div>
+
+  <div class="film-view-toggle" role="tablist" aria-label="View">
+    <button type="button" class="film-view-toggle__btn is-active" data-view="slider" role="tab" aria-selected="true">Slider</button>
+    <button type="button" class="film-view-toggle__btn" data-view="grid" role="tab" aria-selected="false">Grid</button>
+  </div>
+
   <!-- ============ Overlay menu (mobile nav + INDEX) ============ -->
   <div class="overlay-menu" id="overlay-menu" aria-hidden="true">
     <div class="overlay-menu__top">
