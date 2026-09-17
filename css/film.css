@@ -162,28 +162,6 @@ body.is-grid-view .film-grid-wrap {
   padding-top: clamp(3.5rem, 8vh, 5rem); /* clears the top nav */
 }
 
-/* Category filter bar — built from each visible project's own `category`
-   field plus "All", per the reference's ALL/FILM/MUSIC VIDEO/ANIMATION
-   tabs. Clicking one shows/hides grid items via js/film.js. */
-.film-grid-filters {
-  display: flex;
-  gap: 1.25rem;
-  padding: 0 var(--edge) 1.25rem;
-  font-family: var(--font-geist);
-  font-size: 0.7rem;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-}
-.film-grid-filters__btn {
-  color: var(--fg);
-  opacity: 0.4;
-  transition: opacity var(--dur) var(--ease);
-}
-.film-grid-filters__btn.is-active,
-.film-grid-filters__btn:hover {
-  opacity: 1;
-}
-
 .film-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
@@ -194,7 +172,6 @@ body.is-grid-view .film-grid-wrap {
 .film-grid__item {
   display: block;
 }
-.film-grid__item.is-hidden { display: none; }
 .film-grid__cover {
   display: block;
   aspect-ratio: 16 / 9;
@@ -211,12 +188,10 @@ body.is-grid-view .film-grid-wrap {
 .film-grid__item:focus-visible .film-grid__cover img {
   transform: scale(1.04);
 }
-/* Caption sits below the image (not overlaid) — title/client on the
-   left, category on the right, matching the reference's row layout. */
+/* Caption sits below the image (not overlaid), title/client only — no
+   category label (tried and reverted, see film.js). */
 .film-grid__caption {
-  display: flex;
-  justify-content: space-between;
-  gap: 0.75rem;
+  display: block;
   padding-top: 0.5rem;
   font-family: var(--font-geist);
   font-size: 0.7rem;
@@ -224,11 +199,9 @@ body.is-grid-view .film-grid-wrap {
   text-transform: uppercase;
   color: var(--fg);
 }
-.film-grid__category { color: var(--fg-soft); white-space: nowrap; }
 
 @media (max-width: 720px) {
   .film-grid { grid-template-columns: repeat(2, 1fr); }
-  .film-grid-filters { flex-wrap: wrap; gap: 0.75rem 1rem; }
 }
 
 /* --- individual project page — rebuilt to match a reference layout

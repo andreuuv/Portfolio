@@ -41,13 +41,11 @@
     <p><span class="film-meta__label">Role</span> <span id="film-meta-role">—</span></p>
   </div>
 
-  <!-- Grid view — every project as a landscape thumbnail with a category
-       filter bar above it, alternative to the Slider (list + hover
-       stage) above. Per explicit "podrias hacer el mismo layout" /
-       "en grid ahora vamos hacerla asi" requests referencing a site with
-       this exact Slider/Grid toggle + category-filtered grid. -->
+  <!-- Grid view — every project as a landscape thumbnail, all together
+       (no category filter bar — tried and explicitly reverted, "quita
+       las categorias...ponlos todos juntos"), alternative to the Slider
+       (list + hover stage) above. -->
   <div class="film-grid-wrap" id="film-grid-wrap" hidden>
-    <div class="film-grid-filters" id="film-grid-filters" role="tablist" aria-label="Filter by category"></div>
     <div class="film-grid" id="film-grid"></div>
   </div>
 
