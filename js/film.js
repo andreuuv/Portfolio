@@ -1,5 +1,6 @@
 (function () {
   var list = document.getElementById('film-list');
+  var listWrap = document.querySelector('.film-list-wrap');
   var stage = document.getElementById('film-stage');
   var stageVideo = document.getElementById('film-stage-video');
   var metaDirector = document.getElementById('film-meta-director');
@@ -10,8 +11,36 @@
   // playing at a time, swapped by src, so (unlike the old per-row-video
   // list) there's no concurrent-download problem to guard against here.
   var defaultProject = null;
+  var rows = []; // filled once the list renders — used by arrange() below
 
-  function activate(item) {
+  // Mini 3D-carousel: the active row sits at full opacity/no tilt, and
+  // every other row rotates away (rotateX) + dims based on how far its
+  // own index is from the active one — like they're mounted around a
+  // drum and the active one has turned to face front. Per explicit "como
+  // si estuvieran en un circulo 3d...el que este en medio [= active] mas
+  // opacidad" request.
+  function arrange(activeIndex) {
+    rows.forEach(function (row, i) {
+      var d = i - activeIndex;
+      var ad = Math.min(Math.abs(d), 3);
+      row.style.opacity = Math.max(1 - ad * 0.3, 0.18);
+      row.style.transform = 'rotateX(' + (d * -13) + 'deg) scale(' + (1 - ad * 0.06) + ')';
+    });
+
+    // Recenter the whole list (not just the active row) so the active
+    // title always lands at the vertical center of the viewport, still
+    // left-aligned — per explicit "recolocar toda la pagina para que
+    // este en el centro ese titulo alineado todo a la izquierda" request.
+    var activeRow = rows[activeIndex];
+    if (activeRow && list && listWrap) {
+      var rowCenter = activeRow.offsetTop + activeRow.offsetHeight / 2;
+      var viewportCenter = listWrap.clientHeight / 2;
+      list.style.transform = 'translateY(' + (viewportCenter - rowCenter) + 'px)';
+    }
+  }
+
+  var lastActiveIndex = 0;
+  function activate(item, index) {
     if (!item) return;
     if (stageVideo && item.preview) {
       if (stageVideo.getAttribute('src') !== item.preview) {
@@ -24,6 +53,7 @@
     if (stage) stage.classList.add('is-ready');
     if (metaDirector) metaDirector.textContent = item.director || '—';
     if (metaRole) metaRole.textContent = item.role || '—';
+    if (typeof index === 'number') { lastActiveIndex = index; arrange(index); }
   }
 
   // Plain-text row: TITLE | CLIENT on one line, year below, matching the
@@ -32,9 +62,9 @@
   // is the resting "active" one (its clip is what the stage shows before
   // anything's been hovered); hovering/focusing any row shows that one
   // instead, and leaving reverts back to the first.
-  function card(item, isFirst) {
+  function card(item, index) {
     var a = document.createElement('a');
-    a.className = 'film-list__item' + (isFirst ? ' is-active' : '');
+    a.className = 'film-list__item' + (index === 0 ? ' is-active' : '');
     a.href = 'film-project.html?id=' + encodeURIComponent(item.id);
 
     var caption = document.createElement('span');
@@ -48,10 +78,10 @@
     a.appendChild(caption);
     a.appendChild(year);
 
-    a.addEventListener('mouseenter', function () { activate(item); });
-    a.addEventListener('focus', function () { activate(item); });
-    a.addEventListener('mouseleave', function () { activate(defaultProject); });
-    a.addEventListener('blur', function () { activate(defaultProject); });
+    a.addEventListener('mouseenter', function () { activate(item, index); });
+    a.addEventListener('focus', function () { activate(item, index); });
+    a.addEventListener('mouseleave', function () { activate(defaultProject, 0); });
+    a.addEventListener('blur', function () { activate(defaultProject, 0); });
 
     return a;
   }
@@ -79,11 +109,16 @@
       // still uses the full list including these two. Same filter for
       // the Grid view, so both stay in sync.
       var visible = projects.filter(function (p) { return !p.hideFromFilmList; });
-      visible.forEach(function (p, i) { list.appendChild(card(p, i === 0)); });
+      visible.forEach(function (p, i) { list.appendChild(card(p, i)); });
       if (grid) visible.forEach(function (p) { grid.appendChild(gridCard(p)); });
 
+      rows = Array.from(list.children);
       defaultProject = visible[0];
-      activate(defaultProject);
+      activate(defaultProject, 0);
+
+      // Keep the active title centered if the viewport height changes
+      // (resize, orientation change) instead of drifting off-center.
+      window.addEventListener('resize', function () { arrange(lastActiveIndex); });
     })
     .catch(function (err) {
       console.error('Could not load data/projects.json', err);

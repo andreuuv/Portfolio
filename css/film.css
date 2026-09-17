@@ -25,39 +25,48 @@
   width: 100%;
   height: 100%;
   object-fit: cover;
-  opacity: 0.55; /* dimmed so the white text stays readable over any frame */
+  opacity: 0.75; /* was 0.55 — "que se vea un poco mas" */
 }
 
+/* Fixed to the full viewport height (not just "flow from the top") so
+   js/film.js can measure a stable center to recenter the active title
+   against — same idea as .film-stage. Left-aligned, only wide enough for
+   the text column. */
 .film-list-wrap {
-  position: relative;
+  position: fixed;
+  top: 0;
+  left: 0;
+  bottom: 0;
   z-index: 30; /* above the stage, below the nav (40) */
   width: clamp(280px, 34vw, 480px);
-  min-height: 100vh;
-  padding-top: var(--edge);
+  overflow: hidden;
 }
 
 .film-list {
   display: flex;
   flex-direction: column;
+  /* Depth for the rotateX below — without this the 3D tilt would just
+     look like a flat vertical squash instead of items curving away like
+     they're mounted on a drum. */
+  perspective: 900px;
+  /* Repositions (translateY, set by js/film.js's arrange()) so whichever
+     title is active always lands vertically centered in the viewport —
+     per explicit "el titulo...tiene que estar en el centro...recolocar
+     toda la pagina" request — while staying left-aligned throughout. */
+  transition: transform 0.5s var(--ease);
 }
 
+/* Mini 3D-carousel effect: whichever project is active sits at full
+   opacity/no tilt (front of the "circle"), and every other row rotates
+   away + dims the further it is from that one — set as inline
+   transform/opacity by js/film.js's arrange(), since the distance is
+   relative to whichever row is active, not a fixed CSS position. Per
+   explicit "como si estuvieran en un circulo 3d" request. */
 .film-list__item {
   display: block;
   padding: 0.85rem var(--edge);
-  opacity: 0.4;
-  transition: opacity var(--dur) var(--ease);
-}
-/* First item is the resting "active" one (its clip is what the stage
-   shows before anything's been hovered) — same bold-one/dim-rest pattern
-   as the Index tracklist. */
-.film-list__item.is-active { opacity: 1; }
-.film-list__item:hover,
-.film-list__item:focus-visible {
-  opacity: 1;
-}
-.film-list:hover .film-list__item:not(:hover),
-.film-list:focus-within .film-list__item:not(:focus-visible) {
-  opacity: 0.4;
+  transform-style: preserve-3d;
+  transition: transform 0.45s var(--ease), opacity 0.45s var(--ease);
 }
 
 .film-list__caption {
