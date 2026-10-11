@@ -380,6 +380,7 @@ body.is-grid-view .film-grid-wrap {
    size is computed and set inline by fitProjectEmbed() in film-project.js
    instead — this just needs to not force any size of its own. */
 .project-columns__right iframe,
+.project-columns__right video,
 .project-columns__right .media-placeholder {
   border: 0;
 }

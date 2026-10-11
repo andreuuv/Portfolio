@@ -3,7 +3,7 @@
     {
       "id": "2jeys-x-kiimu",
       "title": "TwoJeys X Kiimu",
-      "cover": "assets/images/photography/analog/2jeys-x-kiimu/01.webp",
+      "cover": "assets/images/photography/analog/2jeys-x-kiimu/cover.webp",
       "year": "",
       "photos": [
         "assets/images/photography/analog/2jeys-x-kiimu/01.webp",
@@ -11,12 +11,34 @@
         "assets/images/photography/analog/2jeys-x-kiimu/03.webp",
         "assets/images/photography/analog/2jeys-x-kiimu/04.webp",
         "assets/images/photography/analog/2jeys-x-kiimu/05.webp"
+      ],
+      "sizes": [
+        [
+          1400,
+          2086
+        ],
+        [
+          1400,
+          2086
+        ],
+        [
+          1400,
+          2086
+        ],
+        [
+          1400,
+          939
+        ],
+        [
+          1400,
+          2086
+        ]
       ]
     },
     {
       "id": "alemanbeatz",
       "title": "AlemanBeatz",
-      "cover": "assets/images/photography/analog/alemanbeatz/01.webp",
+      "cover": "assets/images/photography/analog/alemanbeatz/cover.webp",
       "year": "",
       "photos": [
         "assets/images/photography/analog/alemanbeatz/01.webp",
@@ -26,24 +48,72 @@
         "assets/images/photography/analog/alemanbeatz/05.webp",
         "assets/images/photography/analog/alemanbeatz/06.webp",
         "assets/images/photography/analog/alemanbeatz/07.webp"
+      ],
+      "sizes": [
+        [
+          1400,
+          939
+        ],
+        [
+          1400,
+          939
+        ],
+        [
+          1400,
+          939
+        ],
+        [
+          1400,
+          939
+        ],
+        [
+          1400,
+          2086
+        ],
+        [
+          1400,
+          939
+        ],
+        [
+          1400,
+          939
+        ]
       ]
     },
     {
       "id": "places",
       "title": "Places",
-      "cover": "assets/images/photography/analog/places/01.webp",
+      "cover": "assets/images/photography/analog/places/cover.webp",
       "year": "",
       "photos": [
         "assets/images/photography/analog/places/01.webp",
         "assets/images/photography/analog/places/02.webp",
         "assets/images/photography/analog/places/03.webp",
         "assets/images/photography/analog/places/04.webp"
+      ],
+      "sizes": [
+        [
+          1400,
+          932
+        ],
+        [
+          1400,
+          932
+        ],
+        [
+          1400,
+          932
+        ],
+        [
+          1400,
+          2104
+        ]
       ]
     },
     {
       "id": "lifestyle",
       "title": "Lifestyle",
-      "cover": "assets/images/photography/analog/lifestyle/01.webp",
+      "cover": "assets/images/photography/analog/lifestyle/cover.webp",
       "year": "",
       "photos": [
         "assets/images/photography/analog/lifestyle/01.webp",
@@ -52,6 +122,32 @@
         "assets/images/photography/analog/lifestyle/04.webp",
         "assets/images/photography/analog/lifestyle/05.webp",
         "assets/images/photography/analog/lifestyle/06.webp"
+      ],
+      "sizes": [
+        [
+          1400,
+          943
+        ],
+        [
+          1400,
+          943
+        ],
+        [
+          1400,
+          943
+        ],
+        [
+          1400,
+          943
+        ],
+        [
+          1400,
+          943
+        ],
+        [
+          1400,
+          943
+        ]
       ]
     }
   ],
@@ -59,7 +155,7 @@
     {
       "id": "club",
       "title": "Club",
-      "cover": "assets/images/photography/digital/club/01.webp",
+      "cover": "assets/images/photography/digital/club/cover.webp",
       "year": "",
       "photos": [
         "assets/images/photography/digital/club/01.webp",
@@ -69,12 +165,42 @@
         "assets/images/photography/digital/club/05.webp",
         "assets/images/photography/digital/club/06.webp",
         "assets/images/photography/digital/club/07.webp"
+      ],
+      "sizes": [
+        [
+          1400,
+          933
+        ],
+        [
+          1400,
+          2100
+        ],
+        [
+          1400,
+          2100
+        ],
+        [
+          1400,
+          2100
+        ],
+        [
+          1400,
+          933
+        ],
+        [
+          1400,
+          2100
+        ],
+        [
+          1400,
+          2100
+        ]
       ]
     },
     {
       "id": "amore",
       "title": "Amore",
-      "cover": "assets/images/photography/digital/amore/01.webp",
+      "cover": "assets/images/photography/digital/amore/cover.webp",
       "year": "",
       "photos": [
         "assets/images/photography/digital/amore/01.webp",
@@ -84,12 +210,42 @@
         "assets/images/photography/digital/amore/05.webp",
         "assets/images/photography/digital/amore/06.webp",
         "assets/images/photography/digital/amore/07.webp"
+      ],
+      "sizes": [
+        [
+          1400,
+          2100
+        ],
+        [
+          1400,
+          2100
+        ],
+        [
+          1400,
+          933
+        ],
+        [
+          1400,
+          2100
+        ],
+        [
+          1400,
+          2100
+        ],
+        [
+          1400,
+          2100
+        ],
+        [
+          1400,
+          2100
+        ]
       ]
     },
     {
       "id": "little-things",
       "title": "Little Things",
-      "cover": "assets/images/photography/digital/little-things/01.webp",
+      "cover": "assets/images/photography/digital/little-things/cover.webp",
       "year": "",
       "photos": [
         "assets/images/photography/digital/little-things/01.webp",
@@ -98,12 +254,38 @@
         "assets/images/photography/digital/little-things/04.webp",
         "assets/images/photography/digital/little-things/05.webp",
         "assets/images/photography/digital/little-things/06.webp"
+      ],
+      "sizes": [
+        [
+          1400,
+          933
+        ],
+        [
+          1400,
+          933
+        ],
+        [
+          1400,
+          933
+        ],
+        [
+          1400,
+          933
+        ],
+        [
+          1400,
+          933
+        ],
+        [
+          1400,
+          933
+        ]
       ]
     },
     {
       "id": "marina-vestido",
       "title": "Marina Vestido",
-      "cover": "assets/images/photography/digital/marina-vestido/01.webp",
+      "cover": "assets/images/photography/digital/marina-vestido/cover.webp",
       "year": "",
       "photos": [
         "assets/images/photography/digital/marina-vestido/01.webp",
@@ -113,12 +295,42 @@
         "assets/images/photography/digital/marina-vestido/05.webp",
         "assets/images/photography/digital/marina-vestido/06.webp",
         "assets/images/photography/digital/marina-vestido/07.webp"
+      ],
+      "sizes": [
+        [
+          1400,
+          2100
+        ],
+        [
+          1400,
+          933
+        ],
+        [
+          1400,
+          2100
+        ],
+        [
+          1400,
+          2100
+        ],
+        [
+          1400,
+          2100
+        ],
+        [
+          1400,
+          933
+        ],
+        [
+          1400,
+          933
+        ]
       ]
     },
     {
       "id": "revoir",
       "title": "Reflections of Memory",
-      "cover": "assets/images/photography/digital/revoir/01.webp",
+      "cover": "assets/images/photography/digital/revoir/cover.webp",
       "year": "",
       "photos": [
         "assets/images/photography/digital/revoir/01.webp",
@@ -128,12 +340,42 @@
         "assets/images/photography/digital/revoir/05.webp",
         "assets/images/photography/digital/revoir/06.webp",
         "assets/images/photography/digital/revoir/07.webp"
+      ],
+      "sizes": [
+        [
+          1400,
+          788
+        ],
+        [
+          1400,
+          933
+        ],
+        [
+          1400,
+          1400
+        ],
+        [
+          1400,
+          788
+        ],
+        [
+          1400,
+          2100
+        ],
+        [
+          1400,
+          2100
+        ],
+        [
+          1400,
+          788
+        ]
       ]
     },
     {
       "id": "sheila",
       "title": "Sheila",
-      "cover": "assets/images/photography/digital/sheila/01.webp",
+      "cover": "assets/images/photography/digital/sheila/cover.webp",
       "year": "",
       "photos": [
         "assets/images/photography/digital/sheila/01.webp",
@@ -142,6 +384,32 @@
         "assets/images/photography/digital/sheila/04.webp",
         "assets/images/photography/digital/sheila/05.webp",
         "assets/images/photography/digital/sheila/06.webp"
+      ],
+      "sizes": [
+        [
+          1400,
+          788
+        ],
+        [
+          1400,
+          2087
+        ],
+        [
+          1400,
+          933
+        ],
+        [
+          1400,
+          2100
+        ],
+        [
+          1400,
+          933
+        ],
+        [
+          1400,
+          933
+        ]
       ]
     }
   ]

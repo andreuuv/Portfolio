@@ -1,0 +1,74 @@
+# Performance + hardening for Apache hosting (IONOS). Every block is wrapped
+# in <IfModule> so a module the host doesn't have is skipped instead of
+# taking the whole site down with a 500. Ignored by non-Apache hosts.
+
+Options -Indexes
+
+# ---- Force HTTPS (single canonical origin, no duplicate http/https pages)
+<IfModule mod_rewrite.c>
+  RewriteEngine On
+  RewriteCond %{HTTPS} !=on
+  RewriteCond %{HTTP:X-Forwarded-Proto} !=https
+  RewriteRule ^ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
+</IfModule>
+
+# ---- Compression (text-based files; images/video/woff2 are already compressed)
+<IfModule mod_deflate.c>
+  AddOutputFilterByType DEFLATE text/html text/plain text/css text/xml
+  AddOutputFilterByType DEFLATE application/javascript text/javascript application/json application/ld+json
+  AddOutputFilterByType DEFLATE application/xml image/svg+xml
+  AddOutputFilterByType DEFLATE font/ttf font/otf application/x-font-ttf application/x-font-otf
+</IfModule>
+
+# ---- Browser caching
+# HTML always revalidates so edits show up immediately. CSS/JS/JSON aren't
+# fingerprinted, so they get a short cache (1 hour). Images, fonts and video
+# rarely change under the same filename, so they cache for a month — if you
+# ever replace one, give the new file a new name.
+<IfModule mod_expires.c>
+  ExpiresActive On
+  ExpiresDefault "access plus 1 hour"
+  ExpiresByType text/html "access plus 0 seconds"
+  ExpiresByType text/css "access plus 1 hour"
+  ExpiresByType application/javascript "access plus 1 hour"
+  ExpiresByType text/javascript "access plus 1 hour"
+  ExpiresByType application/json "access plus 1 hour"
+  ExpiresByType image/webp "access plus 1 month"
+  ExpiresByType image/png "access plus 1 month"
+  ExpiresByType image/jpeg "access plus 1 month"
+  ExpiresByType image/svg+xml "access plus 1 month"
+  ExpiresByType video/mp4 "access plus 1 month"
+  ExpiresByType font/woff2 "access plus 1 year"
+  ExpiresByType font/otf "access plus 1 year"
+  ExpiresByType font/ttf "access plus 1 year"
+</IfModule>
+
+<IfModule mod_headers.c>
+  <FilesMatch "\.(webp|png|jpe?g|svg|mp4|woff2|otf|ttf)$">
+    Header set Cache-Control "public, max-age=2592000"
+  </FilesMatch>
+  <FilesMatch "\.woff2$">
+    Header set Cache-Control "public, max-age=31536000, immutable"
+  </FilesMatch>
+  Header always set X-Content-Type-Options "nosniff"
+  Header always set Referrer-Policy "strict-origin-when-cross-origin"
+  Header always set X-Frame-Options "SAMEORIGIN"
+</IfModule>
+
+# ---- Make sure the right MIME types go out
+<IfModule mod_mime.c>
+  AddType image/webp .webp
+  AddType video/mp4 .mp4
+  AddType font/woff2 .woff2
+  AddType font/otf .otf
+</IfModule>
+
+# ---- Don't publish dev-only files (docs, local server, git metadata)
+<IfModule mod_authz_core.c>
+  <FilesMatch "(^\.(?!well-known)|\.(md|py|log|sh)$)">
+    Require all denied
+  </FilesMatch>
+</IfModule>
+<IfModule mod_alias.c>
+  RedirectMatch 404 /\.git
+</IfModule>

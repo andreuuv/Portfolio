@@ -33,13 +33,13 @@
 
       document.title = project.title + ' — Andreu Virgil';
 
-      // Full project videos are hosted on Bunny.net Stream (mediadelivery.net) —
-      // a pay-as-you-go alternative to Vimeo's flat €11/mo plan (Andreu's own
-      // call: "se puede hacer con alguna otra que no sea vimeo ya que vale 11
-      // euros al mes"). Bunny already hands out a full ready-to-embed player
-      // URL per video (https://player.mediadelivery.net/play/<library>/<id>),
-      // so embedUrl is just dropped straight into the iframe src — no id/hash
-      // split like Vimeo needed.
+      // Where the full video lives is just data: `embedUrl` in
+      // data/projects.json can be ANY iframe-embeddable player URL (YouTube
+      // /embed/..., Vimeo player.vimeo.com/video/..., Bunny, Cloudflare
+      // Stream...) or a direct .mp4 link (self-hosted on the same server or
+      // any storage/CDN) — see videoMarkup() below. The old Bunny.net trial
+      // library expired and every Bunny link started returning 404, which
+      // is why this no longer assumes a specific provider.
       var isPlaceholderId = !project.embedUrl || project.embedUrl.indexOf('REPLACE') === 0;
 
       // Each project's real video has its own real aspect ratio — some are
@@ -53,11 +53,14 @@
       // Index page's own portrait-video handling.
       var ratioAttr = project.embedAspectRatio ? ' data-embed-ratio="' + project.embedAspectRatio + '"' : '';
 
+      var isVideoFile = !isPlaceholderId && /\.(mp4|webm|mov)(\?|#|$)/i.test(project.embedUrl);
       var videoBlock = isPlaceholderId
         ? '<div class="media-placeholder"' + ratioAttr + '>' +
-          '<span class="media-placeholder__label">Add the embed URL for "' + project.title +
-          '" in data/projects.json (embedUrl — the Bunny Stream player link).</span></div>'
-        : '<iframe src="' + project.embedUrl + '"' + ratioAttr + ' allow="autoplay; fullscreen; picture-in-picture" allowfullscreen title="' + project.title + '"></iframe>';
+          '<span class="media-placeholder__label">Add the video link for "' + project.title +
+          '" in data/projects.json (embedUrl — a YouTube/Vimeo/Bunny embed link or a direct .mp4).</span></div>'
+        : isVideoFile
+          ? '<video controls playsinline preload="metadata" poster="' + project.thumbnail + '"' + ratioAttr + ' src="' + project.embedUrl + '"></video>'
+          : '<iframe src="' + project.embedUrl + '"' + ratioAttr + ' allow="autoplay; fullscreen; picture-in-picture" allowfullscreen referrerpolicy="strict-origin-when-cross-origin" title="' + project.title + '"></iframe>';
 
       var creditsHtml = (project.credits || [])
         .filter(function (c) { return c.role; })
@@ -124,7 +127,7 @@
   // the video full-width below the info column instead of beside it).
   function fitProjectEmbed() {
     var box = document.querySelector('.project-columns__right');
-    var media = box && box.querySelector('iframe, .media-placeholder');
+    var media = box && box.querySelector('iframe, video, .media-placeholder');
     if (!box || !media) return;
     var bw = box.clientWidth, bh = box.clientHeight;
     if (!bw || !bh) return;

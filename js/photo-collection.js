@@ -29,9 +29,14 @@
         // First image is above the fold on load — leave it eager so it
         // doesn't wait on the lazy-load trigger; everything after it can
         // wait until it's scrolled near.
-        var loadingAttr = i === 0 ? '' : ' loading="lazy"';
+        var loadingAttr = i === 0 ? ' fetchpriority="high"' : ' loading="lazy"';
+        // width/height come from data/photos.json ("sizes") so the browser
+        // reserves each photo's real aspect ratio before it loads — without
+        // them the masonry columns jump around as lazy images pop in.
+        var size = (collection.sizes || [])[i];
+        var sizeAttr = size ? ' width="' + size[0] + '" height="' + size[1] + '"' : '';
         return '<div class="collection-grid__item">' +
-          '<img src="' + src + '" alt="' + collection.title + '"' + loadingAttr + ' data-fallback-label="' + src + '">' +
+          '<img src="' + src + '" alt="' + collection.title + '"' + sizeAttr + loadingAttr + ' decoding="async" data-fallback-label="' + src + '">' +
           '</div>';
       }).join('');
 

@@ -13,6 +13,39 @@ too, it's kept up to date and is the source of truth for content editing.
 This file (`CLAUDE.md`) is the *working/design* memory: decisions made,
 why, and known gotchas — for continuing the build, not for the end user.
 
+## Optimization pass (Oct 2026) — read before touching assets/fonts/hosting
+
+- **Project now lives at** `/Users/andreuuv/Desktop/WEB/Portfolio` (the old
+  `Desktop/PaginaWEB` / `Documents/GitHub/Portfolio` paths in older notes
+  below are gone). Filenames changed too: `index.html` = Home, `tracklist.html`
+  = the Index/tracklist page, Cinematography is `film.html` (full-bleed slider
+  + Slider/Grid toggle, see css/film.css).
+- **Videos**: every `assets/video/**` file was re-encoded with ffmpeg
+  (libx264 CRF 27, no audio track, `+faststart`) — 162 MB → ~25 MB, visually
+  identical. Previews are muted loops so they have NO audio now; don't use
+  them as stand-ins for the full film with sound. ffmpeg isn't installed
+  system-wide: `pip3 install --user imageio-ffmpeg` bundles a binary
+  (`imageio_ffmpeg.get_ffmpeg_exe()`).
+- **Images**: photography originals are 1400px wide WebP q76 (was 2000px q80,
+  37 MB → 12 MB). Each collection also has `cover.webp` (1000px) used by the
+  Photography strip (`cover` in data/photos.json) so the strip doesn't pull
+  full-size photos. `sizes` in data/photos.json = real w/h of each photo, used
+  by js/photo-collection.js for width/height attrs (prevents masonry jumping).
+- **Fonts**: no more Google Fonts `@import`. JetBrains Mono + Zeyada are
+  self-hosted woff2 (assets/fonts/), Geist Mono is a 17 KB static Latin woff2
+  subset (ttf kept only as fallback). Epoch.otf deliberately NOT converted —
+  its EULA forbids modifying the font file.
+- **No `<!DOCTYPE>`** on purpose: all pages render in quirks mode and Info /
+  photo-collection spacing shifts 6–12 px in standards mode (measured). Only
+  `<html lang="en">` was added. Don't add a doctype without re-tuning those.
+- **Server config**: `.htaccess` (Apache/IONOS) = gzip, caching, HTTPS
+  redirect, security headers, hides .md/.py/.git. robots.txt + sitemap.xml
+  added; Open Graph/canonical/JSON-LD on the public pages.
+- **Full-film embeds**: the old Bunny.net library is gone (every link 404'd),
+  so `embedUrl` in data/projects.json currently points at each project's
+  local preview clip. film-project.js accepts ANY iframe embed URL (YouTube,
+  Vimeo, Bunny, ...) or a direct .mp4 path — just replace `embedUrl`.
+
 ## Who the user is / how they work
 
 Andreu is not a developer — he directs by describing what he wants in
